@@ -1,7 +1,16 @@
 <template>
   <el-color-picker
     v-model="theme"
-    :predefine="['#409EFF', '#1890ff', '#304156','#212121','#11a983', '#13c2c2', '#6959CD', '#f5222d', ]"
+    :predefine="[
+      '#409EFF',
+      '#1890ff',
+      '#304156',
+      '#212121',
+      '#11a983',
+      '#13c2c2',
+      '#6959CD',
+      '#f5222d'
+    ]"
     class="theme-picker"
     popper-class="theme-picker-dropdown"
   />
@@ -25,7 +34,7 @@ export default {
   },
   watch: {
     defaultTheme: {
-      handler: function(val, oldVal) {
+      handler: function (val, oldVal) {
         this.theme = val
       },
       immediate: true
@@ -35,7 +44,7 @@ export default {
     }
   },
   created() {
-    if(this.defaultTheme !== ORIGINAL_THEME) {
+    if (this.defaultTheme !== ORIGINAL_THEME) {
       this.setTheme(this.defaultTheme)
     }
   },
@@ -49,8 +58,14 @@ export default {
 
       const getHandler = (variable, id) => {
         return () => {
-          const originalCluster = this.getThemeCluster(ORIGINAL_THEME.replace('#', ''))
-          const newStyle = this.updateStyle(this[variable], originalCluster, themeCluster)
+          const originalCluster = this.getThemeCluster(
+            ORIGINAL_THEME.replace('#', '')
+          )
+          const newStyle = this.updateStyle(
+            this[variable],
+            originalCluster,
+            themeCluster
+          )
 
           let styleTag = document.getElementById(id)
           if (!styleTag) {
@@ -71,15 +86,22 @@ export default {
 
       chalkHandler()
 
-      const styles = [].slice.call(document.querySelectorAll('style'))
-        .filter(style => {
+      const styles = [].slice
+        .call(document.querySelectorAll('style'))
+        .filter((style) => {
           const text = style.innerText
-          return new RegExp(oldVal, 'i').test(text) && !/Chalk Variables/.test(text)
+          return (
+            new RegExp(oldVal, 'i').test(text) && !/Chalk Variables/.test(text)
+          )
         })
-      styles.forEach(style => {
+      styles.forEach((style) => {
         const { innerText } = style
         if (typeof innerText !== 'string') return
-        style.innerText = this.updateStyle(innerText, originalCluster, themeCluster)
+        style.innerText = this.updateStyle(
+          innerText,
+          originalCluster,
+          themeCluster
+        )
       })
 
       this.$emit('change', val)
@@ -94,7 +116,7 @@ export default {
     },
 
     getCSSString(url, variable) {
-      return new Promise(resolve => {
+      return new Promise((resolve) => {
         const xhr = new XMLHttpRequest()
         xhr.onreadystatechange = () => {
           if (xhr.readyState === 4 && xhr.status === 200) {
@@ -113,7 +135,8 @@ export default {
         let green = parseInt(color.slice(2, 4), 16)
         let blue = parseInt(color.slice(4, 6), 16)
 
-        if (tint === 0) { // when primary color is in its rgb space
+        if (tint === 0) {
+          // when primary color is in its rgb space
           return [red, green, blue].join(',')
         } else {
           red += Math.round(tint * (255 - red))
