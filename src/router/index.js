@@ -64,13 +64,19 @@ export const constantRoutes = [
   {
     path: '',
     component: Layout,
-    redirect: 'index',
+    redirect: '/user/profile',
     children: [
+      // {
+      //   path: 'index',
+      //   component: () => import('@/views/index'),
+      //   name: 'Index',
+      //   meta: { title: '首页', icon: 'dashboard', affix: true }
+      // }
       {
-        path: 'index',
-        component: () => import('@/views/index'),
-        name: 'Index',
-        meta: { title: '首页', icon: 'dashboard', affix: true }
+        path: 'user/profile',
+        component: () => import('@/views/system/user/profile/index.vue'),
+        name: 'profile',
+        meta: { title: '个人中心', icon: 'dashboard', affix: true }
       }
     ]
   },
@@ -78,13 +84,19 @@ export const constantRoutes = [
     path: '/user',
     component: Layout,
     hidden: true,
-    redirect: 'noredirect',
+    redirect: '/user/changeMima',
     children: [
+      // {
+      //   path: 'profile',
+      //   component: () => import('@/views/system/user/profile/index'),
+      //   name: 'Profile',
+      //   meta: { title: '个人中心', icon: 'user' }
+      // },
       {
-        path: 'profile',
-        component: () => import('@/views/system/user/profile/index'),
-        name: 'Profile',
-        meta: { title: '个人中心', icon: 'user' }
+        path: 'changeMima',
+        component: () => import('@/views/system/user/profile/changeMima'),
+        name: 'changeMima',
+        meta: { title: '修改密码', icon: 'user' }
       }
     ]
   }
@@ -165,15 +177,15 @@ export const dynamicRoutes = [
 ]
 
 // 防止连续点击多次路由报错
-let routerPush = Router.prototype.push;
-let routerReplace = Router.prototype.replace;
+let routerPush = Router.prototype.push
+let routerReplace = Router.prototype.replace
 // push
 Router.prototype.push = function push(location) {
-  return routerPush.call(this, location).catch(err => err)
+  return routerPush.call(this, location).catch((err) => err)
 }
 // replace
 Router.prototype.replace = function push(location) {
-  return routerReplace.call(this, location).catch(err => err)
+  return routerReplace.call(this, location).catch((err) => err)
 }
 
 export default new Router({

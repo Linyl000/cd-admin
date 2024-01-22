@@ -8,9 +8,9 @@
         class="register-form"
       >
         <div class="title">注 册</div>
-        <el-form-item prop="inviteCode">
+        <el-form-item prop="registerCode">
           <el-input
-            v-model="registerForm.inviteCode"
+            v-model="registerForm.registerCode"
             type="text"
             auto-complete="off"
             placeholder="注册码"
@@ -124,7 +124,7 @@ export default {
     return {
       codeUrl: '',
       registerForm: {
-        inviteCode: '',
+        registerCode: '',
         username: '',
         password: '',
         confirmPassword: '',
@@ -132,7 +132,7 @@ export default {
         uuid: ''
       },
       registerRules: {
-        inviteCode: [
+        registerCode: [
           { required: true, trigger: 'blur', message: '请输入您的注册码' }
         ],
         username: [

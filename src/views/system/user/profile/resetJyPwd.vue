@@ -1,8 +1,5 @@
 <template>
   <el-form ref="form" :model="user" :rules="rules" label-width="80px">
-    <el-form-item label="账号">
-      <div>{{ userName }}</div>
-    </el-form-item>
     <el-form-item label="原密码" prop="oldPassword">
       <el-input
         v-model="user.oldPassword"
@@ -27,18 +24,14 @@
         show-password
       />
     </el-form-item>
-    <el-form-item v-if="!ok">
-      <el-button type="primary" size="mini" @click="submit">确定</el-button>
-      <!-- <el-button type="danger" size="mini" @click="close">关闭</el-button> -->
-    </el-form-item>
   </el-form>
 </template>
 
 <script>
-import { updateUserPwd } from '@/api/system/user'
+//交易密码
+// import { updateUserPwd } from '@/api/system/user'
 
 export default {
-  props: ['userName', 'ok'],
   data() {
     const equalToPassword = (rule, value, callback) => {
       if (this.user.newPassword !== value) {
@@ -73,11 +66,11 @@ export default {
     submit() {
       this.$refs['form'].validate((valid) => {
         if (valid) {
-          updateUserPwd(this.user.oldPassword, this.user.newPassword).then(
-            (response) => {
-              this.$modal.msgSuccess('修改成功')
-            }
-          )
+          // updateUserPwd(this.user.oldPassword, this.user.newPassword).then(
+          //   (response) => {
+          //     this.$modal.msgSuccess('修改成功')
+          //   }
+          // )
         }
       })
     },
