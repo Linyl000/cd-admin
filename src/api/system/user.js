@@ -1,5 +1,5 @@
 import request from '@/utils/request'
-import { parseStrEmpty } from "@/utils/ruoyi";
+import { parseStrEmpty } from '@/utils/ruoyi'
 
 // 查询用户列表
 export function listUser(query) {
@@ -130,6 +130,81 @@ export function updateAuthRole(data) {
 export function deptTreeSelect() {
   return request({
     url: '/system/user/deptTree',
+    method: 'get'
+  })
+}
+//新用户设置交易密码
+export function setTtc(data) {
+  return request({
+    url: '/system/user/profile/setTtc',
+    method: 'put',
+    params: data
+  })
+}
+//用户设置交易密码
+export function resetTtc(data) {
+  return request({
+    url: '/system/user/profile/resetTtc',
+    method: 'put',
+    params: data
+  })
+}
+// 获取费率
+export function exchangeRate() {
+  return request({
+    url: '/system/config/configKey/sys.exchangeRate',
+    method: 'get'
+  })
+}
+
+// 获取续费费用
+export function renewalFee() {
+  return request({
+    url: '/system/config/configKey/sys.renewalFee',
+    method: 'get'
+  })
+}
+//续费
+export function renew(data) {
+  return request({
+    url: '/system/user/profile/renew',
+    method: 'put',
+    params: data
+  })
+}
+// 获取自动下单费用
+export function autoOrderPrice() {
+  return request({
+    url: '/system/config/configKey/sys.autoOrderPrice',
+    method: 'get'
+  })
+}
+//自动下单功能
+export function autoOrderRecharge(data) {
+  return request({
+    url: '/system/user/profile/autoOrderRecharge',
+    method: 'put',
+    params: data
+  })
+}
+// 获取收款地址
+export function walletAddress() {
+  return request({
+    url: '/system/config/configKey/sys.walletAddress',
+    method: 'get'
+  })
+}
+// 获取收款地址二维码
+export function walletQR() {
+  return request({
+    url: '/system/config/configKey/sys.walletQR',
+    method: 'get'
+  })
+}
+// 获取提现费率
+export function withdrawalRate() {
+  return request({
+    url: '/system/config/configKey/sys.withdrawalRate',
     method: 'get'
   })
 }

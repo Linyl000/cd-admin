@@ -9,7 +9,7 @@ const user = {
     avatar: '',
     roles: [],
     permissions: [],
-    hasWalletAddress: false
+    transactionCode: false
   },
 
   mutations: {
@@ -31,8 +31,8 @@ const user = {
     SET_PERMISSIONS: (state, permissions) => {
       state.permissions = permissions
     },
-    SET_HASWALLETADDRESS(state, hasWalletAddress) {
-      state.hasWalletAddress = hasWalletAddress
+    SET_TRANSACTIONCODE(state, transactionCode) {
+      state.transactionCode = transactionCode
     }
   },
 
@@ -76,10 +76,10 @@ const user = {
             commit('SET_ID', user.userId)
             commit('SET_NAME', user.userName)
             commit('SET_AVATAR', avatar)
-            if (user.walletAddress) {
-              commit('SET_HASWALLETADDRESS', true)
+            if (user.transactionCode) {
+              commit('SET_TRANSACTIONCODE', true)
             } else {
-              commit('SET_HASWALLETADDRESS', false)
+              commit('SET_TRANSACTIONCODE', false)
             }
             resolve(res)
           })

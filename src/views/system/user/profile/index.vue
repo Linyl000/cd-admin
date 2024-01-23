@@ -148,11 +148,27 @@
       :visible.sync="showChangeJyMima"
       width="600px"
       append-to-body
+      :close-on-click-modal="!needSet"
+      :close-on-press-escape="!needSet"
+      :show-close="!needSet"
     >
-      <resetJyPwd ref="child2" />
+      <resetJyPwd v-if="!needSet" ref="child2" />
+      <el-form
+        v-else
+        ref="form2"
+        :model="form2"
+        :rules="rules2"
+        label-width="160px"
+      >
+        <el-form-item label="设置交易密码" prop="newTransactionCode">
+          <el-input v-model="form2.newTransactionCode" placeholder="" />
+        </el-form-item>
+      </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button type="primary" @click="submitForm2">确 定</el-button>
-        <el-button @click="showChangeJyMima = false">取 消</el-button>
+        <el-button v-if="!needSet" @click="showChangeJyMima = false"
+          >取 消</el-button
+        >
       </div>
     </el-dialog>
     <!-- 3 -->
@@ -184,19 +200,15 @@
       :visible.sync="showChangeWallet"
       width="600px"
       append-to-body
-      :close-on-click-modal="needSet"
-      :close-on-press-escape="needSet"
-      :show-close="needSet"
     >
       <el-form ref="form4" :model="form4" :rules="rules4" label-width="160px">
-        <el-form-item label="BSC链USDT钱包地址" prop="usdt">
-          <el-input v-model="form4.usdt" placeholder="" />
+        <el-form-item label="BSC链USDT钱包地址" prop="walletAddress">
+          <el-input v-model="form4.walletAddress" placeholder="" />
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button type="primary" @click="submitForm4">确 定</el-button>
         <el-button
-          v-if="needSet"
           @click="
             showChangeWallet = false
             form4 = {}
@@ -222,7 +234,7 @@
         <el-row>
           <el-col :span="12">
             <el-form-item label="收款地址">
-              <div>xxxxxxxxxxxx</div>
+              <div>{{ walletaddress }}</div>
             </el-form-item>
             <el-form-item label="充值数量" prop="num">
               <el-input-number
@@ -233,10 +245,10 @@
               ></el-input-number>
             </el-form-item>
             <el-form-item label="当前汇率">
-              <div>7.1</div>
+              <div>{{ exchangerate }}</div>
             </el-form-item>
             <el-form-item label="预估到账">
-              <div>{{ parseFloat((form5.num * 7.1).toFixed(2)) }}</div>
+              <div>{{ parseFloat((form5.num * exchangerate).toFixed(2)) }}</div>
             </el-form-item>
           </el-col>
           <el-col :span="12"><div class="erweima"></div></el-col>
@@ -252,7 +264,7 @@
         <el-button
           @click="
             showInMoney = false
-            form5 = {}
+            form5 = { num: 1 }
           "
           >取 消</el-button
         >
@@ -267,7 +279,7 @@
     >
       <el-form ref="form6" :model="form6" :rules="rules6" label-width="80px">
         <el-form-item label="提币地址">
-          <div>xxxxxxxxxxxx</div>
+          <div>{{ user.walletAddress }}</div>
         </el-form-item>
         <el-form-item label="代币数量" prop="num">
           <el-input-number
@@ -278,13 +290,13 @@
           ></el-input-number>
         </el-form-item>
         <el-form-item label="汇率">
-          <div>7.3</div>
+          <div>{{ withdrawalrate }}</div>
         </el-form-item>
         <el-form-item label="预估到账">
-          <div>{{ parseFloat((form6.num / 7.3).toFixed(2)) }}</div>
+          <div>{{ parseFloat((form6.num / withdrawalrate).toFixed(2)) }}</div>
         </el-form-item>
-        <el-form-item label="交易密码" prop="jymm">
-          <el-input v-model="form6.jymm" placeholder="" />
+        <el-form-item label="交易密码" prop="transactionCode">
+          <el-input v-model="form6.transactionCode" placeholder="" />
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
@@ -317,8 +329,8 @@
             :step-strictly="true"
           ></el-input-number>
         </el-form-item>
-        <el-form-item label="交易密码" prop="jymm">
-          <el-input v-model="form7.jymm" placeholder="" />
+        <el-form-item label="交易密码" prop="transactionCode">
+          <el-input v-model="form7.transactionCode" placeholder="" />
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
@@ -341,10 +353,10 @@
     >
       <el-form ref="form8" :model="form8" :rules="rules8" label-width="80px">
         <el-form-item label="续费价格">
-          <div>500</div>
+          <div>{{ renewalfee }}</div>
         </el-form-item>
-        <el-form-item label="交易密码" prop="jymm">
-          <el-input v-model="form8.jymm" placeholder="" />
+        <el-form-item label="交易密码" prop="transactionCode">
+          <el-input v-model="form8.transactionCode" placeholder="" />
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
@@ -365,12 +377,12 @@
       width="600px"
       append-to-body
     >
-      <el-form ref="form9" :model="form9" :rules="rules9" label-width="80px">
+      <el-form ref="form9" :model="form9" :rules="rules9" label-width="160px">
         <el-form-item label="开通自动下单价格">
-          <div>1000</div>
+          <div>{{ autoorderprice }}</div>
         </el-form-item>
-        <el-form-item label="交易密码" prop="jymm">
-          <el-input v-model="form9.jymm" placeholder="" />
+        <el-form-item label="交易密码" prop="transactionCode">
+          <el-input v-model="form9.transactionCode" placeholder="" />
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
@@ -392,8 +404,19 @@ import userAvatar from './userAvatar'
 import userInfo from './userInfo'
 import resetPwd from './resetPwd'
 import resetJyPwd from './resetJyPwd'
-import { getUserProfile } from '@/api/system/user'
-import { updateUserProfile } from '@/api/system/user'
+import {
+  getUserProfile,
+  updateUserProfile,
+  setTtc,
+  exchangeRate,
+  renewalFee,
+  renew,
+  autoOrderPrice,
+  autoOrderRecharge,
+  walletAddress,
+  walletQR,
+  withdrawalRate
+} from '@/api/system/user'
 
 export default {
   name: 'Profile',
@@ -414,14 +437,22 @@ export default {
       showGiveMoney: false,
       showRenew: false,
       showAutomatic: false,
-      needSet: true,
+      needSet: false,
+      form2: {},
+      rules2: {
+        newTransactionCode: [
+          { required: true, message: '交易密码不能为空', trigger: 'blur' }
+        ]
+      },
       form3: {},
       rules3: {
         email: [{ required: true, message: 'email不能为空', trigger: 'blur' }]
       },
       form4: {},
       rules4: {
-        usdt: [{ required: true, message: '钱包地址不能为空', trigger: 'blur' }]
+        walletAddress: [
+          { required: true, message: '钱包地址不能为空', trigger: 'blur' }
+        ]
       },
       form5: { num: 1 },
       rules5: {
@@ -430,7 +461,9 @@ export default {
       form6: { num: 1 },
       rules6: {
         num: [{ required: true, message: '代币数量不能为空', trigger: 'blur' }],
-        jymm: [{ required: true, message: '交易密码不能为空', trigger: 'blur' }]
+        transactionCode: [
+          { required: true, message: '交易密码不能为空', trigger: 'blur' }
+        ]
       },
       form7: { num: 1 },
       rules7: {
@@ -438,40 +471,77 @@ export default {
           { required: true, message: '对方账号不能为空', trigger: 'blur' }
         ],
         num: [{ required: true, message: '数量不能为空', trigger: 'blur' }],
-        jymm: [{ required: true, message: '交易密码不能为空', trigger: 'blur' }]
+        transactionCode: [
+          { required: true, message: '交易密码不能为空', trigger: 'blur' }
+        ]
       },
       form8: {},
       rules8: {
-        jymm: [{ required: true, message: '交易密码不能为空', trigger: 'blur' }]
+        transactionCode: [
+          { required: true, message: '交易密码不能为空', trigger: 'blur' }
+        ]
       },
       form9: {},
       rules9: {
-        jymm: [{ required: true, message: '交易密码不能为空', trigger: 'blur' }]
-      }
+        transactionCode: [
+          { required: true, message: '交易密码不能为空', trigger: 'blur' }
+        ]
+      },
+      autoorderprice: '',
+      renewalfee: '',
+      withdrawalrate: '',
+      exchangerate: '',
+      walletaddress: ''
     }
   },
   created() {
     this.getUser()
-    if (!this.$store.getters.hasWalletAddress) {
-      this.needSet = false
-      this.showChangeWallet = true
-    }
   },
   methods: {
     getUser() {
       getUserProfile().then((response) => {
         this.user = response.data
         console.log(this.user)
+        if (!this.user.transactionCode) {
+          this.needSet = true
+          this.showChangeJyMima = true
+        }
         this.userName = this.user.userName
         this.roleGroup = response.roleGroup
         this.postGroup = response.postGroup
+      })
+      exchangeRate().then((res) => {
+        this.exchangerate = res.msg
+      })
+      renewalFee().then((res) => {
+        this.renewalfee = res.msg
+      })
+      autoOrderPrice().then((res) => {
+        this.autoorderprice = res.msg
+      })
+      walletAddress().then((res) => {
+        this.walletaddress = res.msg
+      })
+      walletQR().then((res) => {
+        this.walletqr = res.msg
+      })
+      withdrawalRate().then((res) => {
+        this.withdrawalrate = res.msg
       })
     },
     submitForm1() {
       this.$refs.child.submit()
     },
     submitForm2() {
-      this.$refs.child2.submit()
+      if (this.needSet) {
+        setTtc(this.form2).then((response) => {
+          this.$modal.msgSuccess('设置交易密码成功')
+          this.showChangeJyMima = false
+          this.needSet = false
+        })
+      } else {
+        this.$refs.child2.submit()
+      }
     },
     submitForm3() {
       this.$refs['form3'].validate((valid) => {
@@ -488,12 +558,11 @@ export default {
     submitForm4() {
       this.$refs['form4'].validate((valid) => {
         if (valid) {
-          // updateUserPwd(this.user.oldPassword, this.user.newPassword).then(
-          //   (response) => {
-          //     this.$modal.msgSuccess('修改成功')
-          //   }
-          // )
-          this.needSet = true
+          updateUserProfile(this.form4).then((response) => {
+            this.$modal.msgSuccess('修改成功')
+            this.$set(this.user, 'walletAddress', this.form4.walletAddress)
+            this.form4 = {}
+          })
           this.showChangeWallet = false
         }
       })
@@ -537,11 +606,9 @@ export default {
     submitForm8() {
       this.$refs['form8'].validate((valid) => {
         if (valid) {
-          // updateUserPwd(this.user.oldPassword, this.user.newPassword).then(
-          //   (response) => {
-          //     this.$modal.msgSuccess('修改成功')
-          //   }
-          // )
+          renew(this.form8).then((response) => {
+            this.$modal.msgSuccess('续费成功')
+          })
           this.showRenew = false
         }
       })
@@ -549,11 +616,9 @@ export default {
     submitForm9() {
       this.$refs['form9'].validate((valid) => {
         if (valid) {
-          // updateUserPwd(this.user.oldPassword, this.user.newPassword).then(
-          //   (response) => {
-          //     this.$modal.msgSuccess('修改成功')
-          //   }
-          // )
+          autoOrderRecharge(this.form9).then((response) => {
+            this.$modal.msgSuccess('自动下单功能续费成功')
+          })
           this.showAutomatic = false
         }
       })
@@ -585,7 +650,7 @@ export default {
 }
 .erweima {
   width: 220px;
-  height: 340px;
+  height: 300px;
   background-color: pink;
   margin-left: 40px;
 }
