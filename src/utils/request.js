@@ -20,7 +20,7 @@ const service = axios.create({
   // 超时
   timeout: 10000
 })
-
+service.ip = 'https://4592360hv0.vicp.fun'
 // request拦截器
 service.interceptors.request.use(
   (config) => {

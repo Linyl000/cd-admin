@@ -4,10 +4,10 @@
       <h3 style="font-weight: 700">用户基本信息</h3>
       <el-row :gutter="0" class="user-box-one">
         <el-col :span="5"><div class="say-left content">用户名</div></el-col>
-        <el-col :span="9"
+        <el-col :span="11"
           ><div class="content">{{ user.userName }}</div></el-col
         >
-        <el-col :span="10">
+        <el-col :span="8">
           <el-button
             @click="showChangeLoginMima = true"
             type="primary"
@@ -20,8 +20,8 @@
       </el-row>
       <el-row :gutter="0" class="user-box-one">
         <el-col :span="5"><div class="say-left content">交易密码</div></el-col>
-        <el-col :span="9"><div class="content">******</div></el-col>
-        <el-col :span="10">
+        <el-col :span="11"><div class="content">******</div></el-col>
+        <el-col :span="8">
           <el-button
             @click="showChangeJyMima = true"
             type="primary"
@@ -34,12 +34,12 @@
       </el-row>
       <el-row :gutter="0" class="user-box-one">
         <el-col :span="5"><div class="say-left content">邮箱</div></el-col>
-        <el-col :span="9"
+        <el-col :span="11"
           ><div class="content">
             {{ user.email ? user.email : '-' }}
           </div></el-col
         >
-        <el-col :span="10">
+        <el-col :span="8">
           <el-button
             @click="showChangeEmail = true"
             type="primary"
@@ -52,12 +52,12 @@
       </el-row>
       <el-row :gutter="0" class="user-box-one">
         <el-col :span="5"><div class="say-left content">钱包地址</div></el-col>
-        <el-col :span="9"
+        <el-col :span="11"
           ><div class="content">
             {{ user.walletAddress ? user.walletAddress : '-' }}
           </div></el-col
         >
-        <el-col :span="10">
+        <el-col :span="8">
           <el-button
             @click="showChangeWallet = true"
             type="primary"
@@ -70,8 +70,12 @@
       </el-row>
       <el-row :gutter="0" class="user-box-one">
         <el-col :span="5"><div class="say-left content">代币</div></el-col>
-        <el-col :span="9"><div class="content">11111111</div></el-col>
-        <el-col :span="10">
+        <el-col :span="11"
+          ><div class="content">
+            {{ user.amount ? user.amount : '-' }}
+          </div></el-col
+        >
+        <el-col :span="8">
           <el-button-group>
             <el-button
               @click="showInMoney = true"
@@ -102,8 +106,12 @@
       </el-row>
       <el-row :gutter="0" class="user-box-one">
         <el-col :span="5"><div class="say-left content">到期时间</div></el-col>
-        <el-col :span="9"><div class="content">11111111</div></el-col>
-        <el-col :span="10">
+        <el-col :span="11"
+          ><div class="content">
+            {{ user.expireTime ? user.expireTime : '-' }}
+          </div></el-col
+        >
+        <el-col :span="8">
           <el-button
             @click="showRenew = true"
             type="primary"
@@ -116,8 +124,12 @@
       </el-row>
       <el-row :gutter="0" class="user-box-one">
         <el-col :span="5"><div class="say-left content">自动下单</div></el-col>
-        <el-col :span="9"><div class="content">11111111</div></el-col>
-        <el-col :span="10">
+        <el-col :span="11"
+          ><div class="content">
+            {{ user.autoTime ? user.autoTime : '-' }}
+          </div></el-col
+        >
+        <el-col :span="8">
           <el-button
             @click="showAutomatic = true"
             type="primary"
@@ -251,7 +263,18 @@
               <div>{{ parseFloat((form5.num * exchangerate).toFixed(2)) }}</div>
             </el-form-item>
           </el-col>
-          <el-col :span="12"><div class="erweima"></div></el-col>
+          <el-col :span="12"
+            ><div class="erweima">
+              <img
+                :src="walletqr"
+                style="
+                  max-width: 100%;
+                  height: auto;
+                  display: block;
+                  margin: 0 auto;
+                "
+              /></div
+          ></el-col>
         </el-row>
       </el-form>
       <el-alert
@@ -317,9 +340,9 @@
       width="600px"
       append-to-body
     >
-      <el-form ref="form4" :model="form7" :rules="rules7" label-width="80px">
-        <el-form-item label="对方账号" prop="dfzh">
-          <el-input v-model="form7.dfzh" placeholder="" />
+      <el-form ref="form7" :model="form7" :rules="rules7" label-width="80px">
+        <el-form-item label="对方账号" prop="username">
+          <el-input v-model="form7.username" placeholder="" />
         </el-form-item>
         <el-form-item label="数量" prop="num">
           <el-input-number
@@ -415,7 +438,10 @@ import {
   autoOrderRecharge,
   walletAddress,
   walletQR,
-  withdrawalRate
+  withdrawalRate,
+  amountWithdraw,
+  amountRecharge,
+  amountTransfer
 } from '@/api/system/user'
 
 export default {
@@ -467,7 +493,7 @@ export default {
       },
       form7: { num: 1 },
       rules7: {
-        dfzh: [
+        username: [
           { required: true, message: '对方账号不能为空', trigger: 'blur' }
         ],
         num: [{ required: true, message: '数量不能为空', trigger: 'blur' }],
@@ -491,7 +517,8 @@ export default {
       renewalfee: '',
       withdrawalrate: '',
       exchangerate: '',
-      walletaddress: ''
+      walletaddress: '',
+      walletqr: ''
     }
   },
   created() {
@@ -548,7 +575,8 @@ export default {
         if (valid) {
           updateUserProfile(this.form3).then((response) => {
             this.$modal.msgSuccess('修改成功')
-            this.$set(this.user, 'email', this.form3.email)
+            // this.$set(this.user, 'email', this.form3.email)
+            this.getUser()
             this.form3 = {}
           })
           this.showChangeEmail = false
@@ -560,7 +588,8 @@ export default {
         if (valid) {
           updateUserProfile(this.form4).then((response) => {
             this.$modal.msgSuccess('修改成功')
-            this.$set(this.user, 'walletAddress', this.form4.walletAddress)
+            // this.$set(this.user, 'walletAddress', this.form4.walletAddress)
+            this.getUser()
             this.form4 = {}
           })
           this.showChangeWallet = false
@@ -570,11 +599,10 @@ export default {
     submitForm5() {
       this.$refs['form5'].validate((valid) => {
         if (valid) {
-          // updateUserPwd(this.user.oldPassword, this.user.newPassword).then(
-          //   (response) => {
-          //     this.$modal.msgSuccess('修改成功')
-          //   }
-          // )
+          amountRecharge(this.form5).then((response) => {
+            this.$modal.msgSuccess('充值成功')
+            this.getUser()
+          })
           this.showInMoney = false
         }
       })
@@ -582,11 +610,10 @@ export default {
     submitForm6() {
       this.$refs['form6'].validate((valid) => {
         if (valid) {
-          // updateUserPwd(this.user.oldPassword, this.user.newPassword).then(
-          //   (response) => {
-          //     this.$modal.msgSuccess('修改成功')
-          //   }
-          // )
+          amountWithdraw(this.form6).then((response) => {
+            this.$modal.msgSuccess('提现成功')
+            this.getUser()
+          })
           this.showOutMoney = false
         }
       })
@@ -594,11 +621,9 @@ export default {
     submitForm7() {
       this.$refs['form7'].validate((valid) => {
         if (valid) {
-          // updateUserPwd(this.user.oldPassword, this.user.newPassword).then(
-          //   (response) => {
-          //     this.$modal.msgSuccess('修改成功')
-          //   }
-          // )
+          amountTransfer(this.form7).then((response) => {
+            this.$modal.msgSuccess('转账成功')
+          })
           this.showGiveMoney = false
         }
       })
@@ -608,6 +633,7 @@ export default {
         if (valid) {
           renew(this.form8).then((response) => {
             this.$modal.msgSuccess('续费成功')
+            this.getUser()
           })
           this.showRenew = false
         }
@@ -618,6 +644,7 @@ export default {
         if (valid) {
           autoOrderRecharge(this.form9).then((response) => {
             this.$modal.msgSuccess('自动下单功能续费成功')
+            this.getUser()
           })
           this.showAutomatic = false
         }
@@ -651,7 +678,7 @@ export default {
 .erweima {
   width: 220px;
   height: 300px;
-  background-color: pink;
+  text-align: center;
   margin-left: 40px;
 }
 </style>

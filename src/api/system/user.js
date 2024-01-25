@@ -208,3 +208,28 @@ export function withdrawalRate() {
     method: 'get'
   })
 }
+
+//转账
+export function amountTransfer(data) {
+  return request({
+    url: '/system/user/profile/amountTransfer',
+    method: 'post',
+    data: data
+  })
+}
+//代币充值
+export function amountRecharge(data) {
+  return request({
+    url: '/system/user/profile/amountRecharge',
+    method: 'post',
+    data: data
+  })
+}
+//代币提现
+export function amountWithdraw(data) {
+  return request({
+    url: '/system/user/profile/amountWithdraw',
+    method: 'post',
+    data: data
+  })
+}
