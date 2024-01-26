@@ -472,7 +472,14 @@ export default {
       },
       form3: {},
       rules3: {
-        email: [{ required: true, message: 'email不能为空', trigger: 'blur' }]
+        email: [
+          {
+            type: 'email',
+            required: true,
+            message: 'email不能为空',
+            trigger: 'blur'
+          }
+        ]
       },
       form4: {},
       rules4: {

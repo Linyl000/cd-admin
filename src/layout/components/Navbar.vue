@@ -16,7 +16,9 @@
 
     <div class="right-menu">
       <template v-if="device !== 'mobile'">
-        <div class="right-menu-item" style="padding: 0 20px">￥: xxx</div>
+        <div class="right-menu-item" style="padding: 0 20px">
+          ￥: {{ user.amount }}
+        </div>
 
         <screenfull id="screenfull" class="right-menu-item hover-effect" />
 
@@ -63,7 +65,7 @@ import SizeSelect from '@/components/SizeSelect'
 import Search from '@/components/HeaderSearch'
 import RuoYiGit from '@/components/RuoYi/Git'
 import RuoYiDoc from '@/components/RuoYi/Doc'
-
+import { getUserProfile } from '@/api/system/user'
 export default {
   components: {
     Breadcrumb,
@@ -74,6 +76,11 @@ export default {
     Search,
     RuoYiGit,
     RuoYiDoc
+  },
+  data() {
+    return {
+      user: {}
+    }
   },
   computed: {
     ...mapGetters(['sidebar', 'avatar', 'device']),
@@ -94,7 +101,15 @@ export default {
       }
     }
   },
+  created() {
+    this.getUser()
+  },
   methods: {
+    getUser() {
+      getUserProfile().then((response) => {
+        this.user = response.data
+      })
+    },
     toggleSideBar() {
       this.$store.dispatch('app/toggleSideBar')
     },
