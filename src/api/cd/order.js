@@ -42,3 +42,17 @@ export function delOrder(id) {
     method: 'delete'
   })
 }
+//一键退货退款
+export function returnsOrder(id) {
+  return request({
+    url: '/cd/order/returns/' + id,
+    method: 'post'
+  })
+}
+//一键退货退款
+export function upsOrder(id) {
+  return request({
+    url: '/cd/order/upload/' + id,
+    method: 'post'
+  })
+}

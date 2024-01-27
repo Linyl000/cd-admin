@@ -55,7 +55,7 @@ export default {
       if (!name) {
         return false
       }
-      return name.trim() === 'Index'
+      return name.trim() === 'User'
     },
     handleLink(item) {
       const { redirect, path } = item

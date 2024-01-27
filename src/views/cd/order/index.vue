@@ -153,7 +153,7 @@
     </el-form> -->
 
     <el-row :gutter="10" class="mb8">
-      <!-- <el-col :span="1.5">
+      <el-col :span="1.5">
         <el-button
           type="primary"
           plain
@@ -198,21 +198,22 @@
           v-hasPermi="['cd:order:export']"
           >导出</el-button
         >
-      </el-col>-->
+      </el-col>
       <el-col :span="1.5">
         <el-button
           type="info"
           size="mini"
           icon="el-icon-download"
-          @click="handleImport"
-          >商品信息导入</el-button
+          @click="handleImport2"
+          v-hasPermi="['cd:order:importByAdmin']"
+          >导入商品信息</el-button
         >
       </el-col>
       <el-col :span="1.5">
         <el-button
           type="primary"
           size="mini"
-          @click="handleExport"
+          @click="handleImport1"
           icon="el-icon-download"
           v-hasPermi="['cd:order:importByUser']"
           >导入Token</el-button
@@ -247,12 +248,22 @@
         <el-button size="mini" @click="handleQuery">查询</el-button>
       </el-col>
       <el-col :span="1.5">
-        <el-button type="warning" size="mini" @click="handleExport"
+        <el-button
+          type="warning"
+          size="mini"
+          @click="handleDeleteAndMoney"
+          :disabled="multiple"
           >一键退货退款</el-button
         >
       </el-col>
       <el-col :span="1.5">
-        <el-button type="warning" size="mini">一键上传</el-button>
+        <el-button
+          type="warning"
+          size="mini"
+          @click="handleUps"
+          :disabled="multiple"
+          >一键上传</el-button
+        >
       </el-col>
       <el-col :span="1.5">
         <el-button type="danger" size="mini">解除代收发</el-button>
@@ -282,7 +293,12 @@
       />
       <el-table-column label="预赔付" align="center" prop="advancePayment" />
 
-      <el-table-column label="收货地址" align="center" prop="status">
+      <el-table-column
+        label="收货地址"
+        align="center"
+        prop="status"
+        width="200"
+      >
         <template slot-scope="scope">
           <el-tooltip
             class="item"
@@ -340,7 +356,7 @@
             "
             >查看物流</el-button
           >
-          <!-- <el-button
+          <el-button
             size="mini"
             type="text"
             icon="el-icon-edit"
@@ -355,7 +371,7 @@
             @click="handleDelete(scope.row)"
             v-hasPermi="['cd:order:remove']"
             >删除</el-button
-          > -->
+          >
         </template>
       </el-table-column>
     </el-table>
@@ -464,11 +480,10 @@
         <el-button @click="cancel">取 消</el-button>
       </div>
     </el-dialog>
-
-    <!-- 用户导入对话框 -->
+    <!-- token导入对话框 -->
     <el-dialog
       :title="upload.title"
-      :visible.sync="upload.open"
+      :visible.sync="upload.open1"
       width="400px"
       append-to-body
     >
@@ -477,7 +492,48 @@
         :limit="1"
         accept=".xlsx, .xls"
         :headers="upload.headers"
-        :action="upload.url + '?updateSupport=' + upload.updateSupport"
+        :action="upload.url1 + '?updateSupport=' + upload.updateSupport"
+        :disabled="upload.isUploading"
+        :on-progress="handleFileUploadProgress"
+        :on-success="handleFileSuccess"
+        :auto-upload="false"
+        drag
+      >
+        <i class="el-icon-upload"></i>
+        <div class="el-upload__text">将文件拖到此处，或<em>点击上传</em></div>
+        <div class="el-upload__tip text-center" slot="tip">
+          <!-- <div class="el-upload__tip" slot="tip">
+            <el-checkbox v-model="upload.updateSupport" />
+            是否更新已经存在的数据
+          </div> -->
+          <span>仅允许导入xls、xlsx格式文件。</span>
+          <el-link
+            type="primary"
+            :underline="false"
+            style="font-size: 12px; vertical-align: baseline"
+            @click="importTemplate"
+            >下载模板</el-link
+          >
+        </div>
+      </el-upload>
+      <div slot="footer" class="dialog-footer">
+        <el-button type="primary" @click="submitFileForm">确 定</el-button>
+        <el-button @click="upload.open1 = false">取 消</el-button>
+      </div>
+    </el-dialog>
+    <!-- 商品导入对话框 -->
+    <el-dialog
+      :title="upload.title"
+      :visible.sync="upload.open2"
+      width="400px"
+      append-to-body
+    >
+      <el-upload
+        ref="upload"
+        :limit="1"
+        accept=".xlsx, .xls"
+        :headers="upload.headers"
+        :action="upload.url2 + '?updateSupport=' + upload.updateSupport"
         :disabled="upload.isUploading"
         :on-progress="handleFileUploadProgress"
         :on-success="handleFileSuccess"
@@ -503,7 +559,7 @@
       </el-upload>
       <div slot="footer" class="dialog-footer">
         <el-button type="primary" @click="submitFileForm">确 定</el-button>
-        <el-button @click="upload.open = false">取 消</el-button>
+        <el-button @click="upload.open2 = false">取 消</el-button>
       </div>
     </el-dialog>
   </div>
@@ -514,10 +570,13 @@ import {
   listOrder,
   getOrder,
   delOrder,
+  returnsOrder,
+  upsOrder,
   addOrder,
   updateOrder
 } from '@/api/cd/order'
 import { getToken } from '@/utils/auth'
+import service from '@/utils/request.js'
 
 export default {
   name: 'Order',
@@ -547,17 +606,19 @@ export default {
       // 用户导入参数
       upload: {
         // 是否显示弹出层（用户导入）
-        open: false,
+        open1: false,
+        open2: false,
         // 弹出层标题（用户导入）
         title: '',
         // 是否禁用上传
         isUploading: false,
         // 是否更新已经存在的用户数据
-        updateSupport: 0,
+        updateSupport: 1,
         // 设置上传的请求头部
         headers: { Authorization: 'Bearer ' + getToken() },
         // 上传的地址
-        url: process.env.VUE_APP_BASE_API + '/cd/order/importDataByAdmin'
+        url1: service.ip + '/cd/order/importDataByUser',
+        url2: service.ip + '/cd/order/importDataByAdmin'
       },
       // 查询参数
       queryParams: {
@@ -680,6 +741,34 @@ export default {
         }
       })
     },
+    /** 一键退货退款按钮操作 */
+    handleDeleteAndMoney(row) {
+      const ids = row.id || this.ids
+      this.$modal
+        .confirm('是否确认一键退货退款商品订单编号为"' + ids + '"的数据项？')
+        .then(function () {
+          return returnsOrder(ids)
+        })
+        .then(() => {
+          this.getList()
+          this.$modal.msgSuccess('一键退货退款成功')
+        })
+        .catch(() => {})
+    },
+    /** 一键上传按钮操作 */
+    handleUps(row) {
+      const ids = row.id || this.ids
+      this.$modal
+        .confirm('是否确认一键上传商品订单编号为"' + ids + '"的数据项？')
+        .then(function () {
+          return upsOrder(ids)
+        })
+        .then(() => {
+          this.getList()
+          this.$modal.msgSuccess('一键上传成功')
+        })
+        .catch(() => {})
+    },
     /** 删除按钮操作 */
     handleDelete(row) {
       const ids = row.id || this.ids
@@ -705,16 +794,20 @@ export default {
       )
     },
     /** 导入按钮操作 */
-    handleImport() {
+    handleImport1() {
+      this.upload.title = 'Token导入'
+      this.upload.open1 = true
+    },
+    handleImport2() {
       this.upload.title = '商品导入'
-      this.upload.open = true
+      this.upload.open2 = true
     },
     /** 下载模板操作 */
     importTemplate() {
       this.download(
         'cd/order/importTemplate',
         {},
-        `商品表_${new Date().getTime()}.xlsx`
+        `表_${new Date().getTime()}.xlsx`
       )
     },
     // 文件上传中处理
@@ -723,7 +816,8 @@ export default {
     },
     // 文件上传成功处理
     handleFileSuccess(response, file, fileList) {
-      this.upload.open = false
+      this.upload.open1 = false
+      this.upload.open2 = false
       this.upload.isUploading = false
       this.$refs.upload.clearFiles()
       this.$alert(

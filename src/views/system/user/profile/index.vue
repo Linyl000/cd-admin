@@ -173,7 +173,12 @@
         label-width="160px"
       >
         <el-form-item label="设置交易密码" prop="newTransactionCode">
-          <el-input v-model="form2.newTransactionCode" placeholder="" />
+          <el-input
+            v-model="form2.newTransactionCode"
+            placeholder=""
+            type="password"
+            show-password
+          />
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
@@ -244,7 +249,7 @@
         >
         </el-alert>
         <el-row>
-          <el-col :span="12">
+          <el-col :span="13">
             <el-form-item label="收款地址">
               <div>{{ walletaddress }}</div>
             </el-form-item>
@@ -263,7 +268,7 @@
               <div>{{ parseFloat((form5.num * exchangerate).toFixed(2)) }}</div>
             </el-form-item>
           </el-col>
-          <el-col :span="12"
+          <el-col :span="11"
             ><div class="erweima">
               <img
                 :src="walletqr"
@@ -319,7 +324,12 @@
           <div>{{ parseFloat((form6.num / withdrawalrate).toFixed(2)) }}</div>
         </el-form-item>
         <el-form-item label="交易密码" prop="transactionCode">
-          <el-input v-model="form6.transactionCode" placeholder="" />
+          <el-input
+            v-model="form6.transactionCode"
+            placeholder=""
+            type="password"
+            show-password
+          />
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
@@ -353,7 +363,12 @@
           ></el-input-number>
         </el-form-item>
         <el-form-item label="交易密码" prop="transactionCode">
-          <el-input v-model="form7.transactionCode" placeholder="" />
+          <el-input
+            v-model="form7.transactionCode"
+            placeholder=""
+            type="password"
+            show-password
+          />
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
@@ -379,7 +394,12 @@
           <div>{{ renewalfee }}</div>
         </el-form-item>
         <el-form-item label="交易密码" prop="transactionCode">
-          <el-input v-model="form8.transactionCode" placeholder="" />
+          <el-input
+            v-model="form8.transactionCode"
+            placeholder=""
+            type="password"
+            show-password
+          />
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
@@ -405,7 +425,12 @@
           <div>{{ autoorderprice }}</div>
         </el-form-item>
         <el-form-item label="交易密码" prop="transactionCode">
-          <el-input v-model="form9.transactionCode" placeholder="" />
+          <el-input
+            v-model="form9.transactionCode"
+            placeholder=""
+            type="password"
+            show-password
+          />
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
