@@ -6,8 +6,9 @@
           <span>累计订单数</span>
         </div>
         <div>
-          <span style="color: #666666; font-size: 30px; margin-right: 6px"
-            >2222</span
+          <span style="color: #666666; font-size: 30px; margin-right: 6px">{{
+            lj
+          }}</span
           >单
         </div>
       </el-card></el-col
@@ -18,8 +19,9 @@
           <span>当前订单数</span>
         </div>
         <div>
-          <span style="color: #666666; font-size: 30px; margin-right: 6px"
-            >2222</span
+          <span style="color: #666666; font-size: 30px; margin-right: 6px">{{
+            dq
+          }}</span
           >单
         </div>
       </el-card></el-col
@@ -28,7 +30,26 @@
 </template>
 
 <script>
-export default {}
+import { TJlist } from '@/api/cd/statistics'
+export default {
+  data() {
+    return {
+      lj: '',
+      dq: ''
+    }
+  },
+  created() {
+    this.getList()
+  },
+  methods: {
+    getList() {
+      TJlist().then((response) => {
+        this.lj = response.data.allcs
+        this.dq = response.data.csToday
+      })
+    }
+  }
+}
 </script>
 
 <style lang="scss" scoped>

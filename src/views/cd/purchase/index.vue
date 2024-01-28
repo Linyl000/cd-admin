@@ -52,7 +52,7 @@
           </el-form-item>
           <el-form-item label="浏览店铺" prop="lldp">
             <el-input v-model="form.lldp1" /> -
-            <el-input v-model="form.llpd2" /> 秒
+            <el-input v-model="form.lldp2" /> 秒
           </el-form-item>
           <el-form-item label="货比几家" prop="hb">
             <el-input v-model="form.hbNum" /> 家，间隔
@@ -139,9 +139,9 @@
         <div class="el-upload__text">将文件拖到此处，或<em>点击上传</em></div>
         <div class="el-upload__tip text-center" slot="tip">
           <!-- <div class="el-upload__tip" slot="tip">
-            <el-checkbox v-model="upload.updateSupport" />
-            是否更新已经存在的数据
-          </div> -->
+              <el-checkbox v-model="upload.updateSupport" />
+              是否更新已经存在的数据
+            </div> -->
           <span>仅允许导入xls、xlsx格式文件。</span>
           <el-link
             type="primary"
@@ -161,8 +161,8 @@
 </template>
 
 <script>
-import { listOrder } from '@/api/cd/order'
-import { SDorder, ZDorder } from '@/api/cd/purchase'
+// import { listOrder } from '@/api/cd/order'
+import { SDorder, ZDorder, listOrder } from '@/api/cd/purchase'
 import { getToken } from '@/utils/auth'
 import service from '@/utils/request.js'
 export default {

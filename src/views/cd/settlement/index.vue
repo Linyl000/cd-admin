@@ -14,7 +14,7 @@
           <el-button
             type="warning"
             size="mini"
-            @click="handleImport1"
+            @click="handlesubmit1"
             icon="el-icon-download"
             >一键提交</el-button
           >
@@ -25,7 +25,11 @@
           @selection-change="handleSelectionChange"
           style="width: 100%"
         >
-          <el-table-column prop="id" label="ID"> </el-table-column>
+          <el-table-column label="ID" width="80">
+            <template slot-scope="scope">
+              {{ scope.$index + 1 }}
+            </template>
+          </el-table-column>
           <el-table-column prop="token" label="Token"> </el-table-column>
         </el-table>
         <pagination
@@ -36,9 +40,7 @@
           @pagination="getList"
         />
       </el-col>
-      <el-col :span="16"
-        ><div class="grid-content bg-purple-dark">2</div></el-col
-      >
+      <el-col :span="16"><settleTable ref="child" /></el-col>
     </el-row>
     <!-- token导入对话框 -->
     <el-dialog
@@ -86,9 +88,12 @@
 
 <script>
 import { listOrder } from '@/api/cd/order'
+import { submit } from '@/api/cd/settlement'
 import { getToken } from '@/utils/auth'
 import service from '@/utils/request.js'
+import settleTable from './settleTable'
 export default {
+  components: { settleTable },
   data() {
     return {
       // 遮罩层
@@ -142,6 +147,12 @@ export default {
     handleImport1() {
       this.upload.title = 'Token导入'
       this.upload.open1 = true
+    },
+    handlesubmit1() {
+      submit().then((res) => {
+        this.getList()
+        this.$refs.child.getList()
+      })
     },
     /** 下载模板操作 */
     importTemplate() {
