@@ -194,16 +194,16 @@
       :visible.sync="showDetails"
       width="500px"
       append-to-body
+      label-width="180px"
     >
       <el-form
         :model="queryParams"
         ref="queryForm"
         size="small"
-        :inline="true"
         v-show="showSearch"
         label-width="68px"
       >
-        <el-form-item prop="token">
+        <el-form-item label=" ">
           <el-button-group>
             <el-button type="primary" plain size="mini"
               >赔付总金额：{{ form.pfzje }}</el-button
@@ -219,12 +219,12 @@
             >
           </el-button-group>
         </el-form-item>
-        <el-form-item prop="status">
+        <el-form-item label=" ">
           <el-button type="primary" plain size="mini"
             >订单总数：{{ form.ddzs }}</el-button
           >
         </el-form-item>
-        <el-form-item prop="createTime">
+        <el-form-item label=" ">
           <el-button-group>
             <el-button type="primary" plain size="mini"
               >风控订单数：{{ form.fkdds }}</el-button
@@ -237,47 +237,47 @@
             >
           </el-button-group>
         </el-form-item>
-        <el-form-item prop="status">
+        <el-form-item label=" ">
           <el-button type="primary" plain size="mini"
             >提前退款订单数：{{ form.tqtkdds }}</el-button
           >
         </el-form-item>
-        <el-form-item prop="status">
+        <el-form-item label=" ">
           <el-button type="primary" plain size="mini"
             >可结算订单数：{{ form.kjsdds }}</el-button
           >
         </el-form-item>
-        <el-form-item prop="status">
+        <el-form-item label=" ">
           <el-button type="primary" plain size="mini"
             >赔付金额：{{ form.pfje }}</el-button
           >
         </el-form-item>
-        <el-form-item prop="status">
+        <el-form-item label=" ">
           <el-button type="primary" plain size="mini"
             >赔付10块的订单数：{{ form.pf10 }}</el-button
           >
         </el-form-item>
-        <el-form-item prop="status">
+        <el-form-item label=" ">
           <el-button type="primary" plain size="mini"
             >赔付11块的订单数：{{ form.pf11 }}</el-button
           >
         </el-form-item>
-        <el-form-item prop="status">
+        <el-form-item label=" ">
           <el-button type="primary" plain size="mini"
             >赔付12块的订单数：{{ form.pf12 }}</el-button
           >
         </el-form-item>
-        <el-form-item prop="status">
+        <el-form-item label=" ">
           <el-button type="primary" plain size="mini"
             >赔付13块的订单数：{{ form.pf13 }}</el-button
           >
         </el-form-item>
-        <el-form-item prop="status">
+        <el-form-item label=" ">
           <el-button type="primary" plain size="mini"
             >赔付14块的订单数：{{ form.pf14 }}</el-button
           >
         </el-form-item>
-        <el-form-item prop="status">
+        <el-form-item label=" ">
           <el-button type="primary" plain size="mini"
             >赔付15块的订单数：{{ form.pf15 }}</el-button
           >

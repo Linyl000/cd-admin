@@ -240,6 +240,7 @@
       :visible.sync="showInMoney"
       width="600px"
       append-to-body
+      @open="radoms = (Math.random() * 0.998 + 0.001).toFixed(3)"
     >
       <el-form ref="form5" :model="form5" :rules="rules5" label-width="80px">
         <el-alert
@@ -255,7 +256,7 @@
             </el-form-item>
             <el-form-item label="充值数量" prop="num">
               <el-input-number
-                v-model="form5.num"
+                v-model="form5.usdtQty"
                 :min="1"
                 :step="1"
                 :step-strictly="true"
@@ -265,7 +266,12 @@
               <div>{{ exchangerate }}</div>
             </el-form-item>
             <el-form-item label="预估到账">
-              <div>{{ parseFloat((form5.num * exchangerate).toFixed(2)) }}</div>
+              <div>
+                {{ parseFloat((form5.usdtQty * exchangerate).toFixed(2)) }}
+              </div>
+            </el-form-item>
+            <el-form-item label="请支付">
+              {{ Number(form5.usdtQty) + parseFloat(radoms) }}
             </el-form-item>
           </el-col>
           <el-col :span="11"
@@ -292,7 +298,7 @@
         <el-button
           @click="
             showInMoney = false
-            form5 = { num: 1 }
+            form5 = { usdtQty: 1 }
           "
           >取 消</el-button
         >
@@ -309,9 +315,9 @@
         <el-form-item label="提币地址">
           <div>{{ user.walletAddress }}</div>
         </el-form-item>
-        <el-form-item label="代币数量" prop="num">
+        <el-form-item label="代币数量" prop="amountQty">
           <el-input-number
-            v-model="form6.num"
+            v-model="form6.amountQty"
             :min="1"
             :step="1"
             :step-strictly="true"
@@ -321,7 +327,9 @@
           <div>{{ withdrawalrate }}</div>
         </el-form-item>
         <el-form-item label="预估到账">
-          <div>{{ parseFloat((form6.num / withdrawalrate).toFixed(2)) }}</div>
+          <div>
+            {{ parseFloat((form6.amountQty / withdrawalrate).toFixed(2)) }}
+          </div>
         </el-form-item>
         <el-form-item label="交易密码" prop="transactionCode">
           <el-input
@@ -337,7 +345,7 @@
         <el-button
           @click="
             showOutMoney = false
-            form6 = { num: 1 }
+            form6 = { amountQty: 1 }
           "
           >取 消</el-button
         >
@@ -351,12 +359,12 @@
       append-to-body
     >
       <el-form ref="form7" :model="form7" :rules="rules7" label-width="80px">
-        <el-form-item label="对方账号" prop="username">
-          <el-input v-model="form7.username" placeholder="" />
+        <el-form-item label="对方账号" prop="inBy">
+          <el-input v-model="form7.inBy" placeholder="" />
         </el-form-item>
-        <el-form-item label="数量" prop="num">
+        <el-form-item label="数量" prop="amount">
           <el-input-number
-            v-model="form7.num"
+            v-model="form7.amount"
             :min="1"
             :step="1"
             :step-strictly="true"
@@ -376,7 +384,7 @@
         <el-button
           @click="
             showGiveMoney = false
-            form7 = { num: 1 }
+            form7 = { amount: 1 }
           "
           >取 消</el-button
         >
@@ -501,7 +509,7 @@ export default {
           {
             type: 'email',
             required: true,
-            message: 'email不能为空',
+            message: '请输入符合要求的email地址',
             trigger: 'blur'
           }
         ]
@@ -512,23 +520,27 @@ export default {
           { required: true, message: '钱包地址不能为空', trigger: 'blur' }
         ]
       },
-      form5: { num: 1 },
+      form5: { usdtQty: 1 },
       rules5: {
-        num: [{ required: true, message: '充值数量不能为空', trigger: 'blur' }]
+        usdtQty: [
+          { required: true, message: '充值数量不能为空', trigger: 'blur' }
+        ]
       },
-      form6: { num: 1 },
+      form6: { amountQty: 1 },
       rules6: {
-        num: [{ required: true, message: '代币数量不能为空', trigger: 'blur' }],
+        amountQty: [
+          { required: true, message: '代币数量不能为空', trigger: 'blur' }
+        ],
         transactionCode: [
           { required: true, message: '交易密码不能为空', trigger: 'blur' }
         ]
       },
-      form7: { num: 1 },
+      form7: { amount: 1 },
       rules7: {
-        username: [
+        inBy: [
           { required: true, message: '对方账号不能为空', trigger: 'blur' }
         ],
-        num: [{ required: true, message: '数量不能为空', trigger: 'blur' }],
+        amount: [{ required: true, message: '数量不能为空', trigger: 'blur' }],
         transactionCode: [
           { required: true, message: '交易密码不能为空', trigger: 'blur' }
         ]
@@ -550,7 +562,8 @@ export default {
       withdrawalrate: '',
       exchangerate: '',
       walletaddress: '',
-      walletqr: ''
+      walletqr: '',
+      radoms: 0.001
     }
   },
   created() {
@@ -568,6 +581,7 @@ export default {
         this.userName = this.user.userName
         this.roleGroup = response.roleGroup
         this.postGroup = response.postGroup
+        this.$store.commit('SET_AMOUNT', this.user.amount)
       })
       exchangeRate().then((res) => {
         this.exchangerate = res.msg
@@ -631,9 +645,26 @@ export default {
     submitForm5() {
       this.$refs['form5'].validate((valid) => {
         if (valid) {
-          amountRecharge(this.form5).then((response) => {
+          // 获取当前时间并格式化
+          const now = new Date()
+          const formatter = new Intl.DateTimeFormat('zh-Hans-CN', {
+            year: 'numeric',
+            month: '2-digit',
+            day: '2-digit',
+            hour: '2-digit',
+            minute: '2-digit',
+            second: '2-digit',
+            hour12: false,
+            timeZone: 'Asia/Shanghai'
+          })
+
+          const currentTime = `-${formatter.format(now)}`
+          const remark =
+            Number(this.form5.usdtQty) + parseFloat(this.radoms) + currentTime
+          amountRecharge({ ...this.form5, remark: remark }).then((response) => {
             this.$modal.msgSuccess('充值成功')
             this.getUser()
+            this.form5 = { usdtQty: 1 }
           })
           this.showInMoney = false
         }
@@ -645,6 +676,7 @@ export default {
           amountWithdraw(this.form6).then((response) => {
             this.$modal.msgSuccess('提现成功')
             this.getUser()
+            this.form6 = { amountQty: 1 }
           })
           this.showOutMoney = false
         }
@@ -655,6 +687,7 @@ export default {
         if (valid) {
           amountTransfer(this.form7).then((response) => {
             this.$modal.msgSuccess('转账成功')
+            this.form7 = { amount: 1 }
           })
           this.showGiveMoney = false
         }

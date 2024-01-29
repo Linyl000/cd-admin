@@ -35,10 +35,10 @@
         <el-form ref="form" :model="form" :rules="rules" label-width="80px"
           ><el-alert title="下单配置" type="info" close-text="代付通道：正常">
           </el-alert>
-          <el-form-item label="Token" prop="token">
+          <el-form-item :show-message="false" label="Token" prop="token">
             {{ form.token ? form.token : '未选择，已下0单' }}
           </el-form-item>
-          <el-form-item label="宝贝类型" prop="bblx">
+          <el-form-item :show-message="false" label="宝贝类型" prop="bblx">
             <el-checkbox-group v-model="form.bblx">
               <el-checkbox label="退货包邮" name="bblx"></el-checkbox>
               <el-checkbox label="刷新黑名单" name="bblx"></el-checkbox>
@@ -46,49 +46,145 @@
               <el-checkbox label="屏蔽同省商家" name="bblx"></el-checkbox>
             </el-checkbox-group>
           </el-form-item>
-          <el-form-item label="浏览宝贝" prop="looks">
-            <el-input v-model="form.looks1" /> -
-            <el-input v-model="form.looks2" /> 秒
-          </el-form-item>
-          <el-form-item label="浏览店铺" prop="lldp">
-            <el-input v-model="form.lldp1" /> -
-            <el-input v-model="form.lldp2" /> 秒
-          </el-form-item>
-          <el-form-item label="货比几家" prop="hb">
-            <el-input v-model="form.hbNum" /> 家，间隔
-            <el-input v-model="form.hb1" /> - <el-input v-model="form.hb2" /> 秒
-          </el-form-item>
-          <el-form-item label="销量优先" prop="xl">
-            <el-input v-model="form.xlNum" /> 单以上
-          </el-form-item>
-          <el-form-item label="价格区间" prop="jgqj">
-            <el-input v-model="form.jgqj1" /> -
-            <el-input v-model="form.jgqj2" /> 元
+          <el-row style="display: flex"
+            ><el-form-item :show-message="false" label="浏览宝贝" prop="looks1">
+              <el-input-number
+                v-model="form.looks1"
+                :step="1"
+                :step-strictly="true"
+                :min="1"
+                :controls="false"
+              ></el-input-number>
+            </el-form-item>
+            <el-form-item :show-message="false" prop="looks2" label-width="4px">
+              -
+              <el-input-number
+                v-model="form.looks2"
+                :step="1"
+                :step-strictly="true"
+                :min="1"
+                :controls="false"
+              ></el-input-number>
+              秒
+            </el-form-item></el-row
+          >
+          <el-row style="display: flex">
+            <el-form-item :show-message="false" label="浏览店铺" prop="lldp1">
+              <el-input-number
+                v-model="form.lldp1"
+                :step="1"
+                :step-strictly="true"
+                :min="1"
+                :controls="false"
+              ></el-input-number>
+            </el-form-item>
+            <el-form-item :show-message="false" prop="lldp2" label-width="4px">
+              -
+              <el-input-number
+                v-model="form.lldp2"
+                :step="1"
+                :step-strictly="true"
+                :min="1"
+                :controls="false"
+              ></el-input-number>
+              秒
+            </el-form-item></el-row
+          >
+          <el-row style="display: flex">
+            <el-form-item :show-message="false" label="货比几家" prop="hbNum">
+              <el-input-number
+                :step="1"
+                :step-strictly="true"
+                :min="1"
+                :controls="false"
+                v-model="form.hbNum"
+              >
+              </el-input-number>
+            </el-form-item>
+            <el-form-item :show-message="false" prop="hb1" label-width="4px">
+              家，间隔
+              <el-input-number
+                v-model="form.hb1"
+                :step="1"
+                :step-strictly="true"
+                :min="1"
+                :controls="false"
+              ></el-input-number>
+            </el-form-item>
+            <el-form-item :show-message="false" prop="hb2" label-width="4px">
+              -
+              <el-input-number
+                v-model="form.hb2"
+                :step="1"
+                :step-strictly="true"
+                :min="1"
+                :controls="false"
+              ></el-input-number>
+              秒
+            </el-form-item>
+          </el-row>
+          <el-form-item :show-message="false" label="销量优先" prop="xlNum">
+            <el-input-number
+              v-model="form.xlNum"
+              :step="1"
+              :step-strictly="true"
+              :min="1"
+              :controls="false"
+            ></el-input-number
+            >单以上
           </el-form-item>
 
+          <el-row style="display: flex">
+            <el-form-item :show-message="false" label="价格区间" prop="jgqj1">
+              <el-input-number
+                v-model="form.jgqj1"
+                :step="1"
+                :step-strictly="true"
+                :min="1"
+                :controls="false"
+              ></el-input-number>
+            </el-form-item>
+            <el-form-item :show-message="false" prop="jgqj2" label-width="4px">
+              -
+              <el-input-number
+                v-model="form.jgqj2"
+                :step="1"
+                :step-strictly="true"
+                :min="1"
+                :controls="false"
+              ></el-input-number>
+              元
+            </el-form-item></el-row
+          >
           <el-alert title="下单方案" type="info" :closable="false"></el-alert>
-          <el-form-item label="下单选择" prop="resource">
+          <el-form-item :show-message="false" label="下单选择" prop="resource">
             <el-radio-group v-model="form.resource">
               <el-radio label="开团"></el-radio>
               <el-radio label="拼单"></el-radio>
             </el-radio-group>
           </el-form-item>
 
-          <el-form-item label="宝贝类型" prop="bblx2">
+          <el-form-item :show-message="false" label="宝贝类型" prop="bblx2">
             <el-checkbox-group v-model="form.bblx2">
               <el-checkbox label="收藏店铺" name="bblx2"></el-checkbox>
               <el-checkbox label="收藏宝贝" name="bblx2"></el-checkbox>
             </el-checkbox-group>
           </el-form-item>
-          <el-form-item label="规格分类" prop="ggfl">
+          <el-form-item :show-message="false" label="规格分类" prop="ggfl">
             <el-checkbox-group v-model="form.ggfl">
               <el-checkbox label="自动选择" name="ggfl"></el-checkbox>
               <el-checkbox label="随机修改昵称" name="ggfl"></el-checkbox>
               <el-checkbox label="随机收货信息" name="ggfl"></el-checkbox>
             </el-checkbox-group>
           </el-form-item>
-          <el-form-item label="下单数量" prop="oderNum">
-            <el-input v-model="form.oderNum" />
+          <el-form-item :show-message="false" label="下单数量" prop="oderNum">
+            <el-input-number
+              v-model="form.oderNum"
+              :step="1"
+              :step-strictly="true"
+              :min="1"
+              :controls="false"
+            ></el-input-number>
           </el-form-item>
           <el-form-item>
             <el-button
@@ -219,7 +315,135 @@ export default {
         ggfl: ['自动选择', '随机修改昵称', '随机收货信息'],
         oderNum: 5
       },
-      rules: {},
+      rules: {
+        token: [{ required: true, message: 'Token不能为空', trigger: 'blur' }],
+        bblx: [
+          {
+            required: true,
+            type: 'array',
+            min: 1,
+            message: '宝贝类型不能为空',
+            trigger: 'change'
+          }
+        ],
+        looks1: [
+          {
+            required: true,
+            type: 'number',
+            message: '浏览宝贝起始时间不能为空',
+            trigger: 'blur'
+          },
+          { validator: this.validateLooksStartTime, trigger: 'blur' }
+        ],
+        looks2: [
+          {
+            required: true,
+            type: 'number',
+            message: '浏览宝贝结束时间不能为空',
+            trigger: 'blur'
+          },
+          { validator: this.validateLooksEndTime, trigger: 'blur' }
+        ],
+        lldp1: [
+          {
+            required: true,
+            type: 'number',
+            message: '浏览店铺起始时间不能为空',
+            trigger: 'blur'
+          },
+          { validator: this.validateLldpStartTime, trigger: 'blur' }
+        ],
+        lldp2: [
+          {
+            required: true,
+            type: 'number',
+            message: '浏览店铺结束时间不能为空',
+            trigger: 'blur'
+          },
+          { validator: this.validateLldpEndTime, trigger: 'blur' }
+        ],
+        hbNum: [
+          {
+            required: true,
+            type: 'number',
+            message: '货比几家不能为空',
+            trigger: 'blur'
+          }
+        ],
+        hb1: [
+          {
+            required: true,
+            type: 'number',
+            message: '货比间隔起始时间不能为空',
+            trigger: 'blur'
+          },
+          { validator: this.validateHbStartTime, trigger: 'blur' }
+        ],
+        hb2: [
+          {
+            required: true,
+            type: 'number',
+            message: '货比间隔结束时间不能为空',
+            trigger: 'blur'
+          },
+          { validator: this.validateHbEndTime, trigger: 'blur' }
+        ],
+        xlNum: [
+          {
+            required: true,
+            type: 'number',
+            message: '销量优先不能为空',
+            trigger: 'blur'
+          }
+        ],
+        jgqj1: [
+          {
+            required: true,
+            type: 'number',
+            message: '价格区间起始值不能为空',
+            trigger: 'blur'
+          },
+          { validator: this.validateJgqjStartTime, trigger: 'blur' }
+        ],
+        jgqj2: [
+          {
+            required: true,
+            type: 'number',
+            message: '价格区间结束值不能为空',
+            trigger: 'blur'
+          },
+          { validator: this.validateJgqjEndTime, trigger: 'blur' }
+        ],
+        resource: [
+          { required: true, message: '下单选择不能为空', trigger: 'change' }
+        ],
+        bblx2: [
+          {
+            required: true,
+            type: 'array',
+            min: 1,
+            message: '宝贝类型不能为空',
+            trigger: 'change'
+          }
+        ],
+        ggfl: [
+          {
+            required: true,
+            type: 'array',
+            min: 1,
+            message: '规格分类不能为空',
+            trigger: 'change'
+          }
+        ],
+        oderNum: [
+          {
+            required: true,
+            type: 'number',
+            message: '下单数量不能为空',
+            trigger: 'blur'
+          }
+        ]
+      },
       rightList: [],
       rloading: false
     }
@@ -238,89 +462,69 @@ export default {
       })
     },
     manualOrder() {
-      if (!this.form.oderNum) {
-        this.$message({
-          showClose: true,
-          message: '请填写下单数量',
-          type: 'error'
-        })
-        return
-      }
-      if (!this.form.hbNum) {
-        this.$message({
-          showClose: true,
-          message: '请填写货比几家数量',
-          type: 'error'
-        })
-        return
-      }
-      SDorder(this.form.token, this.form.oderNum, this.form.hbNum).then(
-        (response) => {
-          const list = response.data
-          this.rloading = true
-          const that = this
+      this.$refs['form'].validate((valid) => {
+        if (valid) {
+          SDorder(this.form.token, this.form.oderNum, this.form.hbNum).then(
+            (response) => {
+              const list = response.data
+              this.rloading = true
+              const that = this
 
-          function addChunk(start, end) {
-            if (start < list.length) {
-              setTimeout(() => {
-                that.rightList.push(...list.slice(start, end))
-                that.$nextTick(() => {
-                  const container = that.$refs.rightBox
-                  container.scrollTop = container.scrollHeight
-                  if (end < list.length) {
-                    addChunk(end, Math.min(end + 3, list.length))
-                  } else {
-                    that.rloading = false
-                  }
-                })
-              }, 2000)
+              function addChunk(start, end) {
+                if (start < list.length) {
+                  setTimeout(() => {
+                    that.rightList.push(...list.slice(start, end))
+                    that.$nextTick(() => {
+                      const container = that.$refs.rightBox
+                      container.scrollTop = container.scrollHeight
+                      if (end < list.length) {
+                        addChunk(end, Math.min(end + 3, list.length))
+                      } else {
+                        that.rloading = false
+                      }
+                    })
+                  }, 2000)
+                }
+              }
+
+              addChunk(0, Math.min(3, list.length))
             }
-          }
-
-          addChunk(0, Math.min(3, list.length))
+          )
+        } else {
+          this.$message.error('请认真检查表单参数填写')
         }
-      )
+      })
     },
     AutoOrder() {
-      if (!this.form.oderNum) {
-        this.$message({
-          showClose: true,
-          message: '请填写下单数量',
-          type: 'error'
-        })
-        return
-      }
-      if (!this.form.hbNum) {
-        this.$message({
-          showClose: true,
-          message: '请填写货比几家数量',
-          type: 'error'
-        })
-        return
-      }
-      ZDorder(this.form.oderNum, this.form.hbNum).then((response) => {
-        const list = response.data
-        this.rloading = true
-        const that = this
+      this.$refs['form'].validate((valid) => {
+        if (valid) {
+          ZDorder(this.form.oderNum, this.form.hbNum).then((response) => {
+            const list = response.data
+            this.rloading = true
+            const that = this
 
-        function addChunk(start, end) {
-          if (start < list.length) {
-            setTimeout(() => {
-              that.rightList.push(...list.slice(start, end))
-              that.$nextTick(() => {
-                const container = that.$refs.rightBox
-                container.scrollTop = container.scrollHeight
-                if (end < list.length) {
-                  addChunk(end, Math.min(end + 3, list.length))
-                } else {
-                  that.rloading = false
-                }
-              })
-            }, 2000)
-          }
+            function addChunk(start, end) {
+              if (start < list.length) {
+                setTimeout(() => {
+                  that.rightList.push(...list.slice(start, end))
+                  that.$nextTick(() => {
+                    const container = that.$refs.rightBox
+                    container.scrollTop = container.scrollHeight
+                    if (end < list.length) {
+                      addChunk(end, Math.min(end + 3, list.length))
+                    } else {
+                      that.rloading = false
+                    }
+                  })
+                }, 2000)
+              }
+            }
+
+            addChunk(0, Math.min(3, list.length))
+          })
+        } else {
+          this.$message.error('请认真检查表单参数填写')
         }
-
-        addChunk(0, Math.min(3, list.length))
       })
     },
     handleImport1() {
@@ -367,6 +571,73 @@ export default {
     handleCurrentChange(val) {
       this.currentRow = val
       this.$set(this.form, 'token', val.token)
+    },
+    // 自定义校验函数
+    validateLooksStartTime(rule, value, callback) {
+      const looksEndTime = this.form.looks2
+      if (value > looksEndTime) {
+        callback(new Error('浏览宝贝起始时间不能大于结束时间'))
+      } else {
+        callback()
+      }
+    },
+    validateLooksEndTime(rule, value, callback) {
+      const looksStartTime = this.form.looks1
+      if (value < looksStartTime) {
+        callback(new Error('浏览宝贝结束时间不能小于起始时间'))
+      } else {
+        callback()
+      }
+    },
+    validateLldpEndTime(rule, value, callback) {
+      const lldpStartTime = this.form.lldp1
+      if (value < lldpStartTime) {
+        callback(new Error('浏览店铺结束时间不能小于起始时间'))
+      } else {
+        callback()
+      }
+    },
+
+    validateHbEndTime(rule, value, callback) {
+      const hbStartTime = this.form.hb1
+      if (value < hbStartTime) {
+        callback(new Error('货比间隔结束时间不能小于起始时间'))
+      } else {
+        callback()
+      }
+    },
+
+    validateJgqjEndTime(rule, value, callback) {
+      const jgqjStartTime = this.form.jgqj1
+      if (value < jgqjStartTime) {
+        callback(new Error('价格区间结束值不能小于起始值'))
+      } else {
+        callback()
+      }
+    },
+    validateJgqjStartTime(rule, value, callback) {
+      const jgqjEndTime = this.form.jgqj2
+      if (value > jgqjEndTime) {
+        callback(new Error('价格区间起始值不能大于结束值'))
+      } else {
+        callback()
+      }
+    },
+    validateLldpStartTime(rule, value, callback) {
+      const lldpEndTime = this.form.lldp2
+      if (value > lldpEndTime) {
+        callback(new Error('浏览店铺起始时间不能大于结束时间'))
+      } else {
+        callback()
+      }
+    },
+    validateHbStartTime(rule, value, callback) {
+      const hbEndTime = this.form.hb2
+      if (value > hbEndTime) {
+        callback(new Error('货比间隔起始时间不能大于结束时间'))
+      } else {
+        callback()
+      }
     }
   }
 }
@@ -377,8 +648,8 @@ export default {
   display: flex;
   margin-bottom: 5px;
 }
-::v-deep .el-input {
-  width: 40px;
+::v-deep .el-input-number--medium {
+  width: 50px;
   text-align: center;
 }
 ::v-deep .el-input__inner {

@@ -17,7 +17,7 @@
     <div class="right-menu">
       <template v-if="device !== 'mobile'">
         <div class="right-menu-item" style="padding: 0 20px">
-          ￥: {{ user.amount }}
+          ￥: {{ amount }}
         </div>
 
         <screenfull id="screenfull" class="right-menu-item hover-effect" />
@@ -83,7 +83,7 @@ export default {
     }
   },
   computed: {
-    ...mapGetters(['sidebar', 'avatar', 'device']),
+    ...mapGetters(['sidebar', 'avatar', 'device', 'amount']),
     setting: {
       get() {
         return this.$store.state.settings.showSettings
@@ -101,9 +101,9 @@ export default {
       }
     }
   },
-  created() {
-    this.getUser()
-  },
+  // created() {
+  //   this.getUser()
+  // },
   methods: {
     getUser() {
       getUserProfile().then((response) => {

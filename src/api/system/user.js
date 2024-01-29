@@ -213,7 +213,7 @@ export function withdrawalRate() {
 export function amountTransfer(data) {
   return request({
     url: '/system/user/profile/amountTransfer',
-    method: 'post',
+    method: 'put',
     data: data
   })
 }
@@ -221,7 +221,7 @@ export function amountTransfer(data) {
 export function amountRecharge(data) {
   return request({
     url: '/system/user/profile/amountRecharge',
-    method: 'post',
+    method: 'put',
     data: data
   })
 }
@@ -229,7 +229,7 @@ export function amountRecharge(data) {
 export function amountWithdraw(data) {
   return request({
     url: '/system/user/profile/amountWithdraw',
-    method: 'post',
+    method: 'put',
     data: data
   })
 }

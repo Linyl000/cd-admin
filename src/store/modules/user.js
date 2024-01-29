@@ -9,7 +9,7 @@ const user = {
     avatar: '',
     roles: [],
     permissions: [],
-    transactionCode: false
+    amount: false
   },
 
   mutations: {
@@ -31,8 +31,8 @@ const user = {
     SET_PERMISSIONS: (state, permissions) => {
       state.permissions = permissions
     },
-    SET_TRANSACTIONCODE(state, transactionCode) {
-      state.transactionCode = transactionCode
+    SET_AMOUNT(state, amount) {
+      state.amount = amount
     }
   },
 
@@ -76,11 +76,8 @@ const user = {
             commit('SET_ID', user.userId)
             commit('SET_NAME', user.userName)
             commit('SET_AVATAR', avatar)
-            if (user.transactionCode) {
-              commit('SET_TRANSACTIONCODE', true)
-            } else {
-              commit('SET_TRANSACTIONCODE', false)
-            }
+            commit('SET_AMOUNT', user.amount)
+
             resolve(res)
           })
           .catch((error) => {

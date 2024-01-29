@@ -15,6 +15,6 @@ const getters = {
   topbarRouters: (state) => state.permission.topbarRouters,
   defaultRoutes: (state) => state.permission.defaultRoutes,
   sidebarRouters: (state) => state.permission.sidebarRouters,
-  transactionCode: (state) => state.user.transactionCode
+  amount: (state) => state.user.amount
 }
 export default getters
