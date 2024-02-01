@@ -496,13 +496,20 @@ export default {
       })
     },
     AutoOrder() {
+      if (this.form.oderNum !== 1) {
+        this.$message.error('自动下单时下单数量只能为1！')
+        return
+      }
       this.$refs['form'].validate((valid) => {
         if (valid) {
           ZDorder(this.form.oderNum, this.form.hbNum).then((response) => {
+            this.$message({
+              message: '后台已自动下单，订单信息有延迟，请耐心等待',
+              type: 'success'
+            })
             const list = response.data
             this.rloading = true
             const that = this
-
             function addChunk(start, end) {
               if (start < list.length) {
                 setTimeout(() => {

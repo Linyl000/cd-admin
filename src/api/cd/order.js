@@ -45,14 +45,21 @@ export function delOrder(id) {
 //一键退货退款
 export function returnsOrder(id) {
   return request({
-    url: '/cd/order/returns/' + id,
+    url: '/cd/order/returns',
     method: 'post'
   })
 }
-//一键退货退款
+//一键上传
 export function upsOrder(id) {
   return request({
-    url: '/cd/order/upload/' + id,
+    url: '/cd/order/upload',
     method: 'post'
+  })
+}
+//查询上传进度
+export function importResult(code) {
+  return request({
+    url: '/importResult/' + code,
+    method: 'get'
   })
 }

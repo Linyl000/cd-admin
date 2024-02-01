@@ -1,6 +1,6 @@
 <template>
   <div class="app-container">
-    <!-- <el-form
+    <el-form
       :model="queryParams"
       ref="queryForm"
       size="small"
@@ -8,23 +8,23 @@
       v-show="showSearch"
       label-width="68px"
     >
-      <el-form-item label="用户id" prop="userId">
+      <!-- <el-form-item label="用户id" prop="userId">
           <el-input
             v-model="queryParams.userId"
             placeholder="请输入用户id"
             clearable
             @keyup.enter.native="handleQuery"
           />
-        </el-form-item> 
-      <el-form-item label="token值" prop="token">
+        </el-form-item>  -->
+      <el-form-item label="token" prop="token">
         <el-input
           v-model="queryParams.token"
-          placeholder="请输入token值"
+          placeholder="请输入token"
           clearable
           @keyup.enter.native="handleQuery"
         />
       </el-form-item>
-      <el-form-item label="商品名称" prop="tradeName">
+      <!-- <el-form-item label="商品名称" prop="tradeName">
         <el-input
           v-model="queryParams.tradeName"
           placeholder="请输入商品名称"
@@ -87,7 +87,7 @@
           clearable
           @keyup.enter.native="handleQuery"
         />
-      </el-form-item>
+      </el-form-item> -->
       <el-form-item label="订单状态" prop="status">
         <el-select
           v-model="queryParams.status"
@@ -102,7 +102,7 @@
           />
         </el-select>
       </el-form-item>
-      <el-form-item label="上传状态" prop="upStatus">
+      <!-- <el-form-item label="上传状态" prop="upStatus">
         <el-select
           v-model="queryParams.upStatus"
           placeholder="请选择上传状态"
@@ -137,7 +137,7 @@
           clearable
           @keyup.enter.native="handleQuery"
         />
-      </el-form-item>
+      </el-form-item> -->
       <el-form-item>
         <el-button
           type="primary"
@@ -150,7 +150,7 @@
           >重置</el-button
         >
       </el-form-item>
-    </el-form> -->
+    </el-form>
 
     <el-row :gutter="10" class="mb8">
       <el-col :span="1.5">
@@ -211,6 +211,16 @@
       </el-col>
       <el-col :span="1.5">
         <el-button
+          type="info"
+          size="mini"
+          icon="el-icon-download"
+          @click="handleImport3"
+          v-hasPermi="['cd:order:importByAdmin']"
+          >导入运单号信息</el-button
+        >
+      </el-col>
+      <el-col :span="1.5">
+        <el-button
           type="primary"
           size="mini"
           @click="handleImport1"
@@ -219,7 +229,7 @@
           >导入Token</el-button
         >
       </el-col>
-      <el-col :span="1.5">
+      <!--  <el-col :span="1.5">
         <el-form
           :model="queryParams"
           ref="queryForm"
@@ -228,6 +238,14 @@
           v-show="showSearch"
           label-width="68px"
         >
+          <el-form-item label="token" prop="token">
+            <el-input
+              v-model="queryParams.token"
+              placeholder="token"
+              clearable
+              @keyup.enter.native="handleQuery"
+            />
+          </el-form-item>
           <el-form-item prop="status">
             <el-select
               v-model="queryParams.status"
@@ -246,13 +264,13 @@
       </el-col>
       <el-col :span="1.5">
         <el-button size="mini" @click="handleQuery">查询</el-button>
-      </el-col>
+      </el-col> -->
       <el-col :span="1.5">
         <el-button
           type="warning"
           size="mini"
           @click="handleDeleteAndMoney"
-          :disabled="multiple"
+          :loading="deleteAndMoneyLoading"
           >一键退货退款</el-button
         >
       </el-col>
@@ -261,7 +279,7 @@
           type="warning"
           size="mini"
           @click="handleUps"
-          :disabled="multiple"
+          :loading="upsLoading"
           >一键上传</el-button
         >
       </el-col>
@@ -536,7 +554,7 @@
         :action="upload.url2 + '?updateSupport=' + upload.updateSupport"
         :disabled="upload.isUploading"
         :on-progress="handleFileUploadProgress"
-        :on-success="handleFileSuccess"
+        :on-success="handleFileSuccess2"
         :auto-upload="false"
         drag
       >
@@ -562,6 +580,75 @@
         <el-button @click="upload.open2 = false">取 消</el-button>
       </div>
     </el-dialog>
+    <!-- 运单号导入对话框 -->
+    <el-dialog
+      :title="upload.title"
+      :visible.sync="upload.open3"
+      width="400px"
+      append-to-body
+    >
+      <el-upload
+        ref="upload"
+        :limit="1"
+        accept=".xlsx, .xls"
+        :headers="upload.headers"
+        :action="upload.url3 + '?updateSupport=' + upload.updateSupport"
+        :disabled="upload.isUploading"
+        :on-progress="handleFileUploadProgress"
+        :on-success="handleFileSuccess2"
+        :auto-upload="false"
+        drag
+      >
+        <i class="el-icon-upload"></i>
+        <div class="el-upload__text">将文件拖到此处，或<em>点击上传</em></div>
+        <div class="el-upload__tip text-center" slot="tip">
+          <div class="el-upload__tip" slot="tip">
+            <el-checkbox v-model="upload.updateSupport" />
+            是否更新已经存在的数据
+          </div>
+          <span>仅允许导入xls、xlsx格式文件。</span>
+          <el-link
+            type="primary"
+            :underline="false"
+            style="font-size: 12px; vertical-align: baseline"
+            @click="importTemplate"
+            >下载模板</el-link
+          >
+        </div>
+      </el-upload>
+      <div slot="footer" class="dialog-footer">
+        <el-button type="primary" @click="submitFileForm">确 定</el-button>
+        <el-button @click="upload.open2 = false">取 消</el-button>
+      </div>
+    </el-dialog>
+    <!-- 导入进度 -->
+    <el-dialog
+      :title="isPress ? '导入进度' : '导入结果'"
+      :visible.sync="showPress"
+      width="800px"
+      append-to-body
+      :close-on-click-modal="!isPress"
+      :close-on-press-escape="!isPress"
+      :show-close="!isPress"
+    >
+      <el-progress
+        v-if="isPress"
+        :text-inside="true"
+        :stroke-width="26"
+        :percentage="counter"
+      ></el-progress>
+      <div v-else>{{ counter }}</div>
+      <div slot="footer" class="dialog-footer" v-if="!isPress">
+        <el-button
+          type="primary"
+          @click="
+            showPress = false
+            getList
+          "
+          >确 定</el-button
+        >
+      </div>
+    </el-dialog>
   </div>
 </template>
 
@@ -573,7 +660,8 @@ import {
   returnsOrder,
   upsOrder,
   addOrder,
-  updateOrder
+  updateOrder,
+  importResult
 } from '@/api/cd/order'
 import { getToken } from '@/utils/auth'
 import service from '@/utils/request.js'
@@ -585,6 +673,13 @@ export default {
     return {
       lookDH: false,
       dhData: '',
+      timer: null,
+      isPress: true,
+      counter: 0,
+      showPress: false,
+      //
+      deleteAndMoneyLoading: false,
+      upsLoading: false,
       // 遮罩层
       loading: true,
       // 选中数组
@@ -608,6 +703,7 @@ export default {
         // 是否显示弹出层（用户导入）
         open1: false,
         open2: false,
+        open3: false,
         // 弹出层标题（用户导入）
         title: '',
         // 是否禁用上传
@@ -618,7 +714,8 @@ export default {
         headers: { Authorization: 'Bearer ' + getToken() },
         // 上传的地址
         url1: service.ip + '/cd/order/importDataByUser',
-        url2: service.ip + '/cd/order/importDataByAdmin'
+        url2: service.ip + '/cd/order/importDataByAdmin',
+        url3: service.ip + '/cd/order/importByAdminToBillNo'
       },
       // 查询参数
       queryParams: {
@@ -743,31 +840,39 @@ export default {
     },
     /** 一键退货退款按钮操作 */
     handleDeleteAndMoney(row) {
-      const ids = row.id || this.ids
+      // const ids = row.id || this.ids
       this.$modal
-        .confirm('是否确认一键退货退款商品订单编号为"' + ids + '"的数据项？')
-        .then(function () {
-          return returnsOrder(ids)
+        .confirm('是否确认一键退货退款？')
+        .then(() => {
+          this.deleteAndMoneyLoading = true
+          return returnsOrder()
         })
         .then(() => {
+          this.deleteAndMoneyLoading = false
           this.getList()
           this.$modal.msgSuccess('一键退货退款成功')
         })
-        .catch(() => {})
+        .catch(() => {
+          this.deleteAndMoneyLoading = false
+        })
     },
     /** 一键上传按钮操作 */
     handleUps(row) {
-      const ids = row.id || this.ids
+      // const ids = row.id || this.ids
       this.$modal
-        .confirm('是否确认一键上传商品订单编号为"' + ids + '"的数据项？')
-        .then(function () {
-          return upsOrder(ids)
+        .confirm('是否确认一键上传？')
+        .then(() => {
+          this.upsLoading = true
+          return upsOrder()
         })
         .then(() => {
+          this.upsLoading = false
           this.getList()
           this.$modal.msgSuccess('一键上传成功')
         })
-        .catch(() => {})
+        .catch(() => {
+          this.upsLoading = false
+        })
     },
     /** 删除按钮操作 */
     handleDelete(row) {
@@ -802,6 +907,10 @@ export default {
       this.upload.title = '商品导入'
       this.upload.open2 = true
     },
+    handleImport3() {
+      this.upload.title = '运单号导入'
+      this.upload.open3 = true
+    },
     /** 下载模板操作 */
     importTemplate() {
       this.download(
@@ -829,9 +938,41 @@ export default {
       )
       this.getList()
     },
+    // 文件上传成功处理2
+    handleFileSuccess2(response, file, fileList) {
+      this.upload.open1 = false
+      this.upload.open2 = false
+      this.upload.open3 = false
+      this.upload.isUploading = false
+      this.$refs.upload.clearFiles()
+      this.startTimer(response.msg)
+    },
     // 提交上传文件
     submitFileForm() {
       this.$refs.upload.submit()
+    },
+    //开始定时器+清除定时器
+    startTimer(code) {
+      this.counter = 0
+      this.isPress = true
+      this.showPress = true
+      this.timer = setInterval(() => {
+        importResult(code)
+          .then((res) => {
+            this.counter = parseInt(res.jd)
+            if (res.msg && res.jd) {
+              this.isPress = false
+              this.counter = res.msg
+              clearInterval(this.timer)
+            }
+          })
+          .catch((response) => {
+            console.log('bug')
+            this.showPress = false
+            this.$message.error('导入失败！')
+            clearInterval(this.timer)
+          })
+      }, 1000)
     }
   }
 }
