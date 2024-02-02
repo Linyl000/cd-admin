@@ -88,7 +88,7 @@
 
 <script>
 import { listOrder } from '@/api/cd/order'
-import { submit } from '@/api/cd/settlement'
+import { submit, listOrdersettlement } from '@/api/cd/settlement'
 import { getToken } from '@/utils/auth'
 import service from '@/utils/request.js'
 import settleTable from './settleTable'
@@ -137,7 +137,7 @@ export default {
     /** 查询token */
     getList() {
       this.loading = true
-      listOrder(this.queryParams).then((response) => {
+      listOrdersettlement(this.queryParams).then((response) => {
         this.orderList = response.rows
         this.total = response.total
         this.loading = false
