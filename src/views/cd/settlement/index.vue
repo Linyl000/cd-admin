@@ -126,7 +126,7 @@ export default {
         // 设置上传的请求头部
         headers: { Authorization: 'Bearer ' + getToken() },
         // 上传的地址
-        url1: service.ip + '/cd/order/oderSettlementList'
+        url1: service.ip + '/cd/order/importByOrderUser'
       }
     }
   },
