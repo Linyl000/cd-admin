@@ -141,13 +141,13 @@
         </template>
       </el-table-column>
 
-      <!--       <el-table-column
+      <el-table-column
         label="操作"
         align="center"
         class-name="small-padding fixed-width"
       >
-      <template slot-scope="scope">
-         <el-button
+        <template slot-scope="scope">
+          <!--      <el-button
             size="mini"
             type="text"
             icon="el-icon-edit"
@@ -162,12 +162,16 @@
             @click="handleDelete(scope.row)"
             v-hasPermi="['cd:ordersettlement:remove']"
             >删除</el-button
-          > 
-          <el-button size="mini" type="text" @click="handleLooks2(scope.row)"
+          > -->
+          <el-button
+            size="mini"
+            v-if="scope.row.status === '1'"
+            type="text"
+            @click="handleLooks2(scope.row)"
             >查看</el-button
           >
         </template>
-      </el-table-column>-->
+      </el-table-column>
     </el-table>
 
     <pagination

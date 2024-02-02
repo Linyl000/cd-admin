@@ -16,12 +16,14 @@ const service = axios.create({
   // axios中请求配置有baseURL选项，表示请求URL公共部分
   // baseURL: process.env.VUE_APP_BASE_API,
   baseURL: 'https://4592360hv0.vicp.fun',
-  // http://57.181.125.6:8888
+  //  baseURL: 'http://57.181.125.6:8888',
 
   // 超时
   timeout: 10000
 })
 service.ip = 'https://4592360hv0.vicp.fun'
+//service.ip = 'http://57.181.125.6:8888'
+
 // request拦截器
 service.interceptors.request.use(
   (config) => {
