@@ -109,7 +109,7 @@
       @selection-change="handleSelectionChange"
     >
       <el-table-column type="selection" width="55" align="center" />
-      <el-table-column label="id" align="center" prop="id" />
+      <!-- <el-table-column label="id" align="center" prop="id" />-->
       <el-table-column label="用户id" align="center" prop="userId" />
       <el-table-column
         label="提交时间"
@@ -210,80 +210,80 @@
         <el-form-item label=" ">
           <el-button-group>
             <el-button type="primary" plain size="mini"
-              >赔付总金额：{{ form.pfzje }}</el-button
+              >赔付总金额：{{ detailsForm.pfzje }}</el-button
             >
             <el-button type="primary" plain size="mini"
-              >风控总额：{{ form.fkze }}</el-button
+              >风控总额：{{ detailsForm.fkze }}</el-button
             >
             <el-button type="primary" plain size="mini"
-              >bx_佣金:{{ form.bxYj }}</el-button
+              >bx_佣金:{{ detailsForm.bxYj }}</el-button
             >
             <el-button type="primary" plain size="mini"
-              >保险已转账:{{ form.bxyzz }}</el-button
+              >保险已转账:{{ detailsForm.bxyzz }}</el-button
             >
           </el-button-group>
         </el-form-item>
         <el-form-item label=" ">
           <el-button type="primary" plain size="mini"
-            >订单总数：{{ form.ddzs }}</el-button
+            >订单总数：{{ detailsForm.ddzs }}</el-button
           >
         </el-form-item>
         <el-form-item label=" ">
           <el-button-group>
             <el-button type="primary" plain size="mini"
-              >风控订单数：{{ form.fkdds }}</el-button
+              >风控订单数：{{ detailsForm.fkdds }}</el-button
             >
             <el-button type="primary" plain size="mini"
-              >风控已退款订单数:{{ form.fkytkdds }}</el-button
+              >风控已退款订单数:{{ detailsForm.fkytkdds }}</el-button
             >
             <el-button type="primary" plain size="mini"
-              >风控提前订单数:{{ form.fktqdds }}</el-button
+              >风控提前订单数:{{ detailsForm.fktqdds }}</el-button
             >
           </el-button-group>
         </el-form-item>
         <el-form-item label=" ">
           <el-button type="primary" plain size="mini"
-            >提前退款订单数：{{ form.tqtkdds }}</el-button
+            >提前退款订单数：{{ detailsForm.tqtkdds }}</el-button
           >
         </el-form-item>
         <el-form-item label=" ">
           <el-button type="primary" plain size="mini"
-            >可结算订单数：{{ form.kjsdds }}</el-button
+            >可结算订单数：{{ detailsForm.kjsdds }}</el-button
           >
         </el-form-item>
         <el-form-item label=" ">
           <el-button type="primary" plain size="mini"
-            >赔付金额：{{ form.pfje }}</el-button
+            >赔付金额：{{ detailsForm.pfje }}</el-button
           >
         </el-form-item>
         <el-form-item label=" ">
           <el-button type="primary" plain size="mini"
-            >赔付10块的订单数：{{ form.pf10 }}</el-button
+            >赔付10块的订单数：{{ detailsForm.pf10 }}</el-button
           >
         </el-form-item>
         <el-form-item label=" ">
           <el-button type="primary" plain size="mini"
-            >赔付11块的订单数：{{ form.pf11 }}</el-button
+            >赔付11块的订单数：{{ detailsForm.pf11 }}</el-button
           >
         </el-form-item>
         <el-form-item label=" ">
           <el-button type="primary" plain size="mini"
-            >赔付12块的订单数：{{ form.pf12 }}</el-button
+            >赔付12块的订单数：{{ detailsForm.pf12 }}</el-button
           >
         </el-form-item>
         <el-form-item label=" ">
           <el-button type="primary" plain size="mini"
-            >赔付13块的订单数：{{ form.pf13 }}</el-button
+            >赔付13块的订单数：{{ detailsForm.pf13 }}</el-button
           >
         </el-form-item>
         <el-form-item label=" ">
           <el-button type="primary" plain size="mini"
-            >赔付14块的订单数：{{ form.pf14 }}</el-button
+            >赔付14块的订单数：{{ detailsForm.pf14 }}</el-button
           >
         </el-form-item>
         <el-form-item label=" ">
           <el-button type="primary" plain size="mini"
-            >赔付15块的订单数：{{ form.pf15 }}</el-button
+            >赔付15块的订单数：{{ detailsForm.pf15 }}</el-button
           >
         </el-form-item>
       </el-form>

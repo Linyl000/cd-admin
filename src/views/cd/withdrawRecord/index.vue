@@ -119,7 +119,7 @@
       @selection-change="handleSelectionChange"
     >
       <el-table-column type="selection" width="55" align="center" />
-      <el-table-column label="id" align="center" prop="id" />
+      <!-- <el-table-column label="id" align="center" prop="id" /> -->
       <el-table-column label="用户ID" align="center" prop="userName" />
       <el-table-column label="编号" align="center" prop="number" />
       <el-table-column label="数量" align="center" prop="usdtQty" />
