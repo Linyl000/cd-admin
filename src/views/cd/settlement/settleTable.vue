@@ -347,7 +347,8 @@ export default {
       form: {},
       detailsForm: {},
       // 表单校验
-      rules: {}
+      rules: {},
+      tokenList: []
     }
   },
   created() {

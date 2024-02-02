@@ -3,6 +3,14 @@ import request from '@/utils/request'
 // 查询订单结算列表
 export function listOrdersettlement(query) {
   return request({
+    url: '/cd/ordersettlement/list',
+    method: 'get',
+    params: query
+  })
+}
+//
+export function listOrders(query) {
+  return request({
     url: '/cd/order/oderSettlementList',
     method: 'get',
     params: query
