@@ -178,13 +178,15 @@
             </el-checkbox-group>
           </el-form-item>
           <el-form-item :show-message="false" label="下单数量" prop="oderNum">
-            <el-input-number
+            {{ form.oderNum }}
+            <!-- <el-input-number
               v-model="form.oderNum"
               :step="1"
               :step-strictly="true"
               :min="1"
               :controls="false"
-            ></el-input-number>
+              :disabled="true"
+            ></el-input-number> -->
           </el-form-item>
           <el-form-item>
             <el-button
@@ -313,7 +315,7 @@ export default {
         resource: '开团',
         bblx2: ['收藏店铺', '收藏宝贝'],
         ggfl: ['自动选择', '随机修改昵称', '随机收货信息'],
-        oderNum: 5
+        oderNum: 1
       },
       rules: {
         token: [{ required: true, message: 'Token不能为空', trigger: 'blur' }],
@@ -496,10 +498,6 @@ export default {
       })
     },
     AutoOrder() {
-      if (this.form.oderNum !== 1) {
-        this.$message.error('自动下单时下单数量只能为1！')
-        return
-      }
       this.$refs['form'].validate((valid) => {
         if (valid) {
           ZDorder(this.form.oderNum, this.form.hbNum).then((response) => {

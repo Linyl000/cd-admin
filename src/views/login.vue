@@ -44,7 +44,7 @@
               v-model="loginForm.code"
               auto-complete="off"
               placeholder="验证码"
-              style="width: 63%"
+              style="width: 50%; margin-top: 10px"
               @keyup.enter.native="handleLogin"
             >
               <svg-icon
@@ -255,10 +255,11 @@ export default {
     color: #bfbfbf;
   }
   .login-code {
-    width: 33%;
-    height: 38px;
+    width: 48%;
+    height: 48px;
     float: right;
     img {
+      width: 90%;
       cursor: pointer;
       vertical-align: middle;
     }
@@ -276,7 +277,7 @@ export default {
     letter-spacing: 1px;
   }
   .login-code-img {
-    height: 38px;
+    height: 55px;
   }
 }
 </style>

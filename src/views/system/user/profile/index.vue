@@ -662,7 +662,7 @@ export default {
           const remark =
             Number(this.form5.usdtQty) + parseFloat(this.radoms) + currentTime
           amountRecharge({ ...this.form5, remark: remark }).then((response) => {
-            this.$modal.msgSuccess('充值成功')
+            this.$modal.msgSuccess(response.msg)
             this.getUser()
             this.form5 = { usdtQty: 1 }
           })
