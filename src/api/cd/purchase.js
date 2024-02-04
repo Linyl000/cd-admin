@@ -23,3 +23,19 @@ export function listOrder(query) {
     params: query
   })
 }
+//获取下单价格区间最小值
+export function min(query) {
+  return request({
+    url: '/system/config/configKey/cd_order_jgqj_min',
+    method: 'get',
+    params: query
+  })
+}
+//获取下单价格区间最大值
+export function max(query) {
+  return request({
+    url: '/system/config/configKey/cd_order_jgqj_max',
+    method: 'get',
+    params: query
+  })
+}

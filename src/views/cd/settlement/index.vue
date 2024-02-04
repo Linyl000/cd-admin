@@ -3,15 +3,21 @@
     <el-row style="margin: 20px">
       <el-col :span="8"
         ><div class="btn">
-          <el-button
-            type="primary"
-            size="mini"
-            @click="handleImport1"
-            icon="el-icon-download"
-            v-hasPermi="['cd:order:importByUser']"
-            >导入Token</el-button
+          <el-upload
+            ref="upload"
+            :limit="1"
+            :headers="upload.headers"
+            :action="upload.url1 + '?updateSupport=' + upload.updateSupport"
+            :disabled="upload.isUploading"
+            :on-progress="handleFileUploadProgress"
+            :on-success="handleFileSuccess"
           >
+            <el-button type="primary" size="mini" icon="el-icon-download"
+              >导入Token</el-button
+            >
+          </el-upload>
           <el-button
+            style="margin-left: 10px"
             type="warning"
             size="mini"
             @click="handlesubmit1"
@@ -30,7 +36,20 @@
               {{ scope.$index + 1 }}
             </template>
           </el-table-column>
-          <el-table-column prop="token" label="Token"> </el-table-column>
+          <el-table-column prop="token" label="Token">
+            <template slot-scope="scope">
+              <div v-if="scope.row.tokenOrderCount === '0'">
+                {{ scope.row.token }}
+              </div>
+              <div
+                v-else-if="scope.row.tokenOrderCount === '1'"
+                style="color: #67c23a"
+              >
+                {{ scope.row.token }}
+              </div>
+              <div v-else style="color: #f56c6c">{{ scope.row.token }}</div>
+            </template>
+          </el-table-column>
         </el-table>
         <pagination
           v-show="total > 0"
@@ -126,7 +145,7 @@ export default {
         // 设置上传的请求头部
         headers: { Authorization: 'Bearer ' + getToken() },
         // 上传的地址
-        url1: service.ip + '/cd/order/importByOrderUser'
+        url1: service.ip + '/cd/order/importSettlementByUser'
       }
     }
   },

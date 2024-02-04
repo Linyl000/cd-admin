@@ -2,8 +2,8 @@
   <div>
     <el-row style="margin: 20px" :gutter="20">
       <el-col :span="7"
-        ><div class="btn">
-          <el-button
+        ><!--<div class="btn">
+           <el-button
             type="primary"
             size="mini"
             @click="handleImport1"
@@ -11,7 +11,26 @@
             v-hasPermi="['cd:order:importByUser']"
             >导入Token</el-button
           >
-        </div>
+        </div> -->
+        <!--   accept=".xlsx, .xls" drag   -->
+        <el-upload
+          ref="upload"
+          :limit="1"
+          :headers="upload.headers"
+          :action="upload.url1 + '?updateSupport=' + upload.updateSupport"
+          :disabled="upload.isUploading"
+          :on-progress="handleFileUploadProgress"
+          :on-success="handleFileSuccess"
+          :auto-upload="true"
+        >
+          <el-button
+            type="primary"
+            size="mini"
+            icon="el-icon-download"
+            v-hasPermi="['cd:order:importByUser']"
+            >导入Token</el-button
+          >
+        </el-upload>
         <el-table
           highlight-current-row
           @current-change="handleCurrentChange"
@@ -21,7 +40,17 @@
           style="width: 100%"
         >
           <el-table-column prop="id" label="ID" width="80"> </el-table-column>
-          <el-table-column prop="token" label="Token"> </el-table-column>
+          <el-table-column prop="token" label="Token">
+            <template slot-scope="scope">
+              <div
+                v-if="scope.row.tokenOrderCount !== '0'"
+                style="color: #67c23a"
+              >
+                {{ scope.row.token }}
+              </div>
+              <div v-else>{{ scope.row.token }}</div>
+            </template>
+          </el-table-column>
         </el-table>
         <pagination
           v-show="total > 0"
@@ -36,7 +65,11 @@
           ><el-alert title="下单配置" type="info" close-text="代付通道：正常">
           </el-alert>
           <el-form-item :show-message="false" label="Token" prop="token">
-            {{ form.token ? form.token : '未选择，已下0单' }}
+            {{
+              form.token
+                ? form.token + '，已下' + tokenOrderCount + '单'
+                : '未选择，已下0单'
+            }}
           </el-form-item>
           <el-form-item :show-message="false" label="宝贝类型" prop="bblx">
             <el-checkbox-group v-model="form.bblx">
@@ -140,7 +173,8 @@
                 v-model="form.jgqj1"
                 :step="1"
                 :step-strictly="true"
-                :min="1"
+                :min="pmin"
+                :max="pmax"
                 :controls="false"
               ></el-input-number>
             </el-form-item>
@@ -150,7 +184,8 @@
                 v-model="form.jgqj2"
                 :step="1"
                 :step-strictly="true"
-                :min="1"
+                :min="pmin"
+                :max="pmax"
                 :controls="false"
               ></el-input-number>
               元
@@ -260,7 +295,7 @@
 
 <script>
 // import { listOrder } from '@/api/cd/order'
-import { SDorder, ZDorder, listOrder } from '@/api/cd/purchase'
+import { SDorder, ZDorder, listOrder, min, max } from '@/api/cd/purchase'
 import { getToken } from '@/utils/auth'
 import service from '@/utils/request.js'
 export default {
@@ -299,6 +334,7 @@ export default {
         url1: service.ip + '/cd/order/importByOrderUser',
         url2: service.ip + '/cd/order/importDataByAdmin'
       },
+      tokenOrderCount: 0,
       form: {
         token: '',
         bblx: ['退货包邮', '刷新黑名单', '7天无理由退货', '屏蔽同省商家'],
@@ -312,10 +348,10 @@ export default {
         xlNum: 5,
         jgqj1: 1,
         jgqj2: 100,
-        resource: '开团',
+        resource: '拼单',
         bblx2: ['收藏店铺', '收藏宝贝'],
         ggfl: ['自动选择', '随机修改昵称', '随机收货信息'],
-        oderNum: 1
+        oderNum: 2
       },
       rules: {
         token: [{ required: true, message: 'Token不能为空', trigger: 'blur' }],
@@ -447,11 +483,15 @@ export default {
         ]
       },
       rightList: [],
-      rloading: false
+      rloading: false,
+      pmin: 1,
+      pmax: 1
     }
   },
   created() {
     this.getList()
+    this.min()
+    this.max()
   },
   methods: {
     /** 查询token */
@@ -463,9 +503,25 @@ export default {
         this.loading = false
       })
     },
+    min() {
+      min().then((res) => {
+        this.pmin = parseInt(res.msg)
+        this.$set(this.form, 'jgqj1', this.pmin)
+      })
+    },
+    max() {
+      max().then((res) => {
+        this.pmax = parseInt(res.msg)
+        this.$set(this.form, 'jgqj2', this.pmax)
+      })
+    },
     manualOrder() {
       this.$refs['form'].validate((valid) => {
         if (valid) {
+          if (this.tokenOrderCount === '2') {
+            this.$message.error('一个token最多只允许下两个订单！')
+            return
+          }
           SDorder(this.form.token, this.form.oderNum, this.form.hbNum).then(
             (response) => {
               const list = response.data
@@ -502,7 +558,8 @@ export default {
         if (valid) {
           ZDorder(this.form.oderNum, this.form.hbNum).then((response) => {
             this.$message({
-              message: '后台已自动下单，订单信息有延迟，请耐心等待',
+              message:
+                '后台已自动下单，默认跳过失效token，订单信息有延迟，请耐心等待',
               type: 'success'
             })
             const list = response.data
@@ -576,6 +633,7 @@ export default {
     handleCurrentChange(val) {
       this.currentRow = val
       this.$set(this.form, 'token', val.token)
+      this.tokenOrderCount = val.tokenOrderCount
     },
     // 自定义校验函数
     validateLooksStartTime(rule, value, callback) {

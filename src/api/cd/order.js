@@ -45,15 +45,15 @@ export function delOrder(id) {
 //一键退货退款
 export function returnsOrder(id) {
   return request({
-    url: '/cd/order/returns',
-    method: 'post'
+    url: '/cd/order/returns/' + id,
+    method: 'put'
   })
 }
 //一键上传
 export function upsOrder(id) {
   return request({
-    url: '/cd/order/upload',
-    method: 'post'
+    url: '/cd/order/upload/' + id,
+    method: 'put'
   })
 }
 //查询上传进度

@@ -220,51 +220,26 @@
         >
       </el-col>
       <el-col :span="1.5">
-        <el-button
-          type="primary"
-          size="mini"
-          @click="handleImport1"
-          icon="el-icon-download"
-          v-hasPermi="['cd:order:importByUser']"
-          >导入Token</el-button
+        <el-upload
+          ref="upload"
+          :limit="1"
+          :headers="upload.headers"
+          :action="upload.url1 + '?updateSupport=' + upload.updateSupport"
+          :disabled="upload.isUploading"
+          :on-progress="handleFileUploadProgress"
+          :on-success="handleFileSuccess"
+          :auto-upload="true"
         >
+          <el-button
+            type="primary"
+            size="mini"
+            icon="el-icon-download"
+            v-hasPermi="['cd:order:importByUser']"
+            >导入Token</el-button
+          >
+        </el-upload>
       </el-col>
-      <!--  <el-col :span="1.5">
-        <el-form
-          :model="queryParams"
-          ref="queryForm"
-          size="mini"
-          :inline="true"
-          v-show="showSearch"
-          label-width="68px"
-        >
-          <el-form-item label="token" prop="token">
-            <el-input
-              v-model="queryParams.token"
-              placeholder="token"
-              clearable
-              @keyup.enter.native="handleQuery"
-            />
-          </el-form-item>
-          <el-form-item prop="status">
-            <el-select
-              v-model="queryParams.status"
-              placeholder="订单状态"
-              clearable
-            >
-              <el-option
-                v-for="dict in dict.type.cd_order_status"
-                :key="dict.value"
-                :label="dict.label"
-                :value="dict.value"
-              />
-            </el-select>
-          </el-form-item>
-        </el-form>
-      </el-col>
-      <el-col :span="1.5">
-        <el-button size="mini" @click="handleQuery">查询</el-button>
-      </el-col> -->
+
       <el-col :span="1.5">
         <el-button
           type="warning"
@@ -300,8 +275,19 @@
       <el-table-column type="selection" width="55" align="center" />
       <!-- <el-table-column label="id" align="center" prop="id" />
       <el-table-column label="用户id" align="center" prop="userId" /> -->
-      <el-table-column label="token值" align="center" prop="token" />
-      <el-table-column label="商品名称" align="center" prop="tradeName" />
+      <el-table-column
+        label="token值"
+        align="center"
+        prop="token"
+        :show-overflow-tooltip="true"
+      />
+      <el-table-column
+        label="商品名称"
+        align="center"
+        prop="tradeName"
+        :show-overflow-tooltip="true"
+      />
+
       <el-table-column label="单价" align="center" prop="unitPrice" />
       <el-table-column label="手续费" align="center" prop="handlingCharge" />
       <el-table-column
@@ -332,6 +318,7 @@
           </el-tooltip>
         </template>
       </el-table-column>
+      <el-table-column label="创建时间" align="center" prop="orderTime" />
       <el-table-column label="订单状态" align="center" prop="status">
         <template slot-scope="scope">
           <dict-tag
@@ -356,7 +343,7 @@
           />
         </template>
       </el-table-column>
-      <el-table-column label="备注" align="center" prop="remark" />
+      <!-- <el-table-column label="备注" align="center" prop="remark" /> -->
       <!-- <el-table-column label="运单号" align="center" prop="waybillNo" /> -->
       <el-table-column
         label="操作"
@@ -390,6 +377,9 @@
             v-hasPermi="['cd:order:remove']"
             >删除</el-button
           >
+          <div v-if="showRemark">
+            <el-tag type="warning">{{ scope.row.remark }}</el-tag>
+          </div>
         </template>
       </el-table-column>
     </el-table>
@@ -671,6 +661,7 @@ export default {
   dicts: ['cd_order_status', 'cd_settlement_status', 'cd_order_upstatus'],
   data() {
     return {
+      showRemark: false,
       lookDH: false,
       dhData: '',
       timer: null,
@@ -694,6 +685,7 @@ export default {
       total: 0,
       // 商品订单表格数据
       orderList: [],
+      idList: [],
       // 弹出层标题
       title: '',
       // 是否显示弹出层
@@ -751,6 +743,7 @@ export default {
       this.loading = true
       listOrder(this.queryParams).then((response) => {
         this.orderList = response.rows
+        this.idList = this.orderList.map((item) => item.id)
         this.total = response.total
         this.loading = false
       })
@@ -845,10 +838,11 @@ export default {
         .confirm('是否确认一键退货退款？')
         .then(() => {
           this.deleteAndMoneyLoading = true
-          return returnsOrder()
+          return returnsOrder(this.idList)
         })
         .then(() => {
           this.deleteAndMoneyLoading = false
+          this.showRemark = true
           this.getList()
           this.$modal.msgSuccess('一键退货退款成功')
         })
@@ -863,10 +857,11 @@ export default {
         .confirm('是否确认一键上传？')
         .then(() => {
           this.upsLoading = true
-          return upsOrder()
+          return upsOrder(this.idList)
         })
         .then(() => {
           this.upsLoading = false
+          this.showRemark = true
           this.getList()
           this.$modal.msgSuccess('一键上传成功')
         })
