@@ -168,9 +168,9 @@
           </el-form-item>
 
           <el-row style="display: flex">
-            <el-form-item :show-message="false" label="价格区间" prop="jgqj1">
+            <el-form-item :show-message="false" label="价格区间" prop="jgqjMin">
               <el-input-number
-                v-model="form.jgqj1"
+                v-model="form.jgqjMin"
                 :step="1"
                 :step-strictly="true"
                 :min="pmin"
@@ -178,10 +178,14 @@
                 :controls="false"
               ></el-input-number>
             </el-form-item>
-            <el-form-item :show-message="false" prop="jgqj2" label-width="4px">
+            <el-form-item
+              :show-message="false"
+              prop="jgqjMax"
+              label-width="4px"
+            >
               -
               <el-input-number
-                v-model="form.jgqj2"
+                v-model="form.jgqjMax"
                 :step="1"
                 :step-strictly="true"
                 :min="pmin"
@@ -213,15 +217,14 @@
             </el-checkbox-group>
           </el-form-item>
           <el-form-item :show-message="false" label="下单数量" prop="oderNum">
-            {{ form.oderNum }}
-            <!-- <el-input-number
+            <el-input-number
               v-model="form.oderNum"
               :step="1"
               :step-strictly="true"
               :min="1"
+              :max="2"
               :controls="false"
-              :disabled="true"
-            ></el-input-number> -->
+            ></el-input-number>
           </el-form-item>
           <el-form-item>
             <el-button
@@ -346,8 +349,8 @@ export default {
         hb1: 1,
         hb2: 5,
         xlNum: 5,
-        jgqj1: 1,
-        jgqj2: 100,
+        jgqjMin: 1,
+        jgqjMax: 100,
         resource: '拼单',
         bblx2: ['收藏店铺', '收藏宝贝'],
         ggfl: ['自动选择', '随机修改昵称', '随机收货信息'],
@@ -434,7 +437,7 @@ export default {
             trigger: 'blur'
           }
         ],
-        jgqj1: [
+        jgqjMin: [
           {
             required: true,
             type: 'number',
@@ -443,7 +446,7 @@ export default {
           },
           { validator: this.validateJgqjStartTime, trigger: 'blur' }
         ],
-        jgqj2: [
+        jgqjMax: [
           {
             required: true,
             type: 'number',
@@ -506,13 +509,13 @@ export default {
     min() {
       min().then((res) => {
         this.pmin = parseInt(res.msg)
-        this.$set(this.form, 'jgqj1', this.pmin)
+        this.$set(this.form, 'jgqjMin', this.pmin)
       })
     },
     max() {
       max().then((res) => {
         this.pmax = parseInt(res.msg)
-        this.$set(this.form, 'jgqj2', this.pmax)
+        this.$set(this.form, 'jgqjMax', this.pmax)
       })
     },
     manualOrder() {
@@ -522,7 +525,12 @@ export default {
             this.$message.error('一个token最多只允许下两个订单！')
             return
           }
-          SDorder(this.form.token, this.form.oderNum, this.form.hbNum).then(
+          if (this.tokenOrderCount === '1' && this.form.oderNum !== 1) {
+            this.$message.error('该token已下过一单，只能再下一个订单！')
+            return
+          }
+          const { token, oderNum, hbNum, jgqjMin, jgqjMax } = this.form
+          SDorder({ token, oderNum, hbNum, jgqjMin, jgqjMax }).then(
             (response) => {
               const list = response.data
               this.rloading = true
@@ -556,7 +564,8 @@ export default {
     AutoOrder() {
       this.$refs['form'].validate((valid) => {
         if (valid) {
-          ZDorder(this.form.oderNum, this.form.hbNum).then((response) => {
+          const { oderNum, hbNum, jgqjMin, jgqjMax } = this.form
+          ZDorder({ oderNum, hbNum, jgqjMin, jgqjMax }).then((response) => {
             this.$message({
               message:
                 '后台已自动下单，默认跳过失效token，订单信息有延迟，请耐心等待',
@@ -671,7 +680,7 @@ export default {
     },
 
     validateJgqjEndTime(rule, value, callback) {
-      const jgqjStartTime = this.form.jgqj1
+      const jgqjStartTime = this.form.jgqjMin
       if (value < jgqjStartTime) {
         callback(new Error('价格区间结束值不能小于起始值'))
       } else {
@@ -679,7 +688,7 @@ export default {
       }
     },
     validateJgqjStartTime(rule, value, callback) {
-      const jgqjEndTime = this.form.jgqj2
+      const jgqjEndTime = this.form.jgqjMax
       if (value > jgqjEndTime) {
         callback(new Error('价格区间起始值不能大于结束值'))
       } else {

@@ -272,8 +272,8 @@
       :data="orderList"
       @selection-change="handleSelectionChange"
     >
-      <el-table-column type="selection" width="55" align="center" />
-      <!-- <el-table-column label="id" align="center" prop="id" />
+      <!--  <el-table-column type="selection" width="55" align="center" />
+     <el-table-column label="id" align="center" prop="id" />
       <el-table-column label="用户id" align="center" prop="userId" /> -->
       <el-table-column
         label="token值"

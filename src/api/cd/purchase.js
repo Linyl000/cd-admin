@@ -1,21 +1,23 @@
 import request from '@/utils/request'
 
 // 手动下单
-export function SDorder(token, oderNum, hbNum) {
+export function SDorder(data) {
   return request({
-    url: '/cd/order/manualOrder/' + token + '/' + oderNum + '/' + hbNum,
-    method: 'post'
+    url: '/cd/order/manualOrder',
+    method: 'post',
+    data: data
   })
 }
 
 // 自动下单
-export function ZDorder(oderNum, hbNum) {
+export function ZDorder(data) {
   return request({
-    url: '/cd/order/AutoOrder/' + oderNum + '/' + hbNum,
-    method: 'post'
+    url: '/cd/order/AutoOrder',
+    method: 'post',
+    data: data
   })
 }
-// 订单列表
+// 订单列表`
 export function listOrder(query) {
   return request({
     url: '/cd/order/oderList',
