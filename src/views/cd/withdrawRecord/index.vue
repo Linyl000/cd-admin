@@ -166,6 +166,7 @@
       :page.sync="queryParams.pageNum"
       :limit.sync="queryParams.pageSize"
       @pagination="getList"
+      :page-sizes="[50, 100]"
     />
 
     <!-- 添加或修改提现记录对话框 -->

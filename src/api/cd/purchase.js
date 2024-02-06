@@ -17,6 +17,14 @@ export function ZDorder(data) {
     data: data
   })
 }
+//获取自动下单下单信息
+export function getAutoOrderResult(query) {
+  return request({
+    url: '/orderCommon/getAutoOrderResult',
+    method: 'get',
+    params: query
+  })
+}
 // 订单列表`
 export function listOrder(query) {
   return request({

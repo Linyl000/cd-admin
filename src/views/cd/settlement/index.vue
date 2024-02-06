@@ -41,12 +41,12 @@
               <div v-if="scope.row.tokenOrderCount === '0'">
                 {{ scope.row.token }}
               </div>
-              <div
+              <!-- <div
                 v-else-if="scope.row.tokenOrderCount === '1'"
                 style="color: #67c23a"
               >
                 {{ scope.row.token }}
-              </div>
+              </div> -->
               <div v-else style="color: #f56c6c">{{ scope.row.token }}</div>
             </template>
           </el-table-column>
@@ -57,6 +57,7 @@
           :page.sync="queryParams.pageNum"
           :limit.sync="queryParams.pageSize"
           @pagination="getList"
+          :page-sizes="[50, 100]"
         />
       </el-col>
       <el-col :span="16"><settleTable ref="child" /></el-col>

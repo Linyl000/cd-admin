@@ -39,7 +39,11 @@
           @selection-change="handleSelectionChange"
           style="width: 100%"
         >
-          <el-table-column prop="id" label="ID" width="80"> </el-table-column>
+          <el-table-column label="ID" width="80">
+            <template slot-scope="scope">
+              {{ scope.$index + 1 }}
+            </template>
+          </el-table-column>
           <el-table-column prop="token" label="Token">
             <template slot-scope="scope">
               <div
@@ -58,6 +62,7 @@
           :page.sync="queryParams.pageNum"
           :limit.sync="queryParams.pageSize"
           @pagination="getList"
+          :page-sizes="[50, 100]"
         />
       </el-col>
       <el-col :span="10">
@@ -229,11 +234,13 @@
           <el-form-item>
             <el-button
               type="primary"
-              :disabled="!form.token"
+              :disabled="!form.token || isAutoing"
               @click="manualOrder"
               >手动下单</el-button
             >
-            <el-button type="primary" @click="AutoOrder">自动下单</el-button>
+            <el-button :disabled="isAutoing" type="primary" @click="AutoOrder"
+              >自动下单</el-button
+            >
           </el-form-item>
         </el-form>
       </el-col>
@@ -298,12 +305,21 @@
 
 <script>
 // import { listOrder } from '@/api/cd/order'
-import { SDorder, ZDorder, listOrder, min, max } from '@/api/cd/purchase'
+import {
+  SDorder,
+  ZDorder,
+  listOrder,
+  min,
+  max,
+  getAutoOrderResult
+} from '@/api/cd/purchase'
 import { getToken } from '@/utils/auth'
 import service from '@/utils/request.js'
 export default {
   data() {
     return {
+      //自动下单中
+      isAutoing: false,
       currentRow: null,
       // 遮罩层
       loading: true, // 选中数组
@@ -348,7 +364,7 @@ export default {
         hbNum: 5,
         hb1: 1,
         hb2: 5,
-        xlNum: 5,
+        xlNum: 500,
         jgqjMin: 1,
         jgqjMax: 100,
         resource: '拼单',
@@ -495,6 +511,15 @@ export default {
     this.getList()
     this.min()
     this.max()
+    let says = false
+    if (localStorage.getItem('autodata') === null) {
+      says = false // 不存在就为false
+    } else {
+      says = localStorage.getItem('autodata') === '0' ? true : false // 存在则根据数值判断
+    }
+    if (says) {
+      this.getAutoOrderResult()
+    }
   },
   methods: {
     /** 查询token */
@@ -562,41 +587,77 @@ export default {
       })
     },
     AutoOrder() {
+      this.$set(this.form, 'token', '全部token自动下单')
       this.$refs['form'].validate((valid) => {
         if (valid) {
           const { oderNum, hbNum, jgqjMin, jgqjMax } = this.form
           ZDorder({ oderNum, hbNum, jgqjMin, jgqjMax }).then((response) => {
-            this.$message({
-              message:
-                '后台已自动下单，默认跳过失效token，订单信息有延迟，请耐心等待',
-              type: 'success'
-            })
-            const list = response.data
-            this.rloading = true
-            const that = this
-            function addChunk(start, end) {
-              if (start < list.length) {
-                setTimeout(() => {
-                  that.rightList.push(...list.slice(start, end))
-                  that.$nextTick(() => {
-                    const container = that.$refs.rightBox
-                    container.scrollTop = container.scrollHeight
-                    if (end < list.length) {
-                      addChunk(end, Math.min(end + 3, list.length))
-                    } else {
-                      that.rloading = false
-                    }
-                  })
-                }, 2000)
+            this.$alert(
+              '后台已自动下单，默认跳过失效token，请勿离开页面，离开页面将暂停自动下单！',
+              '提示',
+              {
+                confirmButtonText: '确定',
+                showClose: false,
+                callback: (action) => {
+                  this.isAutoing = true
+                  this.getAutoOrderResult()
+                }
               }
-            }
-
-            addChunk(0, Math.min(3, list.length))
+            )
           })
         } else {
           this.$message.error('请认真检查表单参数填写')
         }
       })
+    },
+    getAutoOrderResult() {
+      getAutoOrderResult().then((res) => {
+        localStorage.setItem('autodata', res.isEnd)
+        const list = res.msg
+        this.rloading = true
+        const that = this
+        function addChunk(start, end) {
+          if (start < list.length) {
+            setTimeout(() => {
+              that.rightList.push(...list.slice(start, end))
+              that.$nextTick(() => {
+                const container = that.$refs.rightBox
+                container.scrollTop = container.scrollHeight
+                if (end < list.length) {
+                  addChunk(end, Math.min(end + 3, list.length))
+                } else {
+                  that.rloading = false
+                  if (res.isEnd === '0') {
+                    this.getAutoOrderResult()
+                    return
+                  }
+                }
+              })
+            }, 2000)
+          }
+        }
+        addChunk(0, Math.min(3, list.length))
+      })
+      // const list = response.data
+      // this.rloading = true
+      // const that = this
+      // function addChunk(start, end) {
+      //   if (start < list.length) {
+      //     setTimeout(() => {
+      //       that.rightList.push(...list.slice(start, end))
+      //       that.$nextTick(() => {
+      //         const container = that.$refs.rightBox
+      //         container.scrollTop = container.scrollHeight
+      //         if (end < list.length) {
+      //           addChunk(end, Math.min(end + 3, list.length))
+      //         } else {
+      //           that.rloading = false
+      //         }
+      //       })
+      //     }, 2000)
+      //   }
+      // }
+      // addChunk(0, Math.min(3, list.length))
     },
     handleImport1() {
       this.upload.title = 'Token导入'

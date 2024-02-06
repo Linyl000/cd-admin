@@ -385,6 +385,7 @@
     </el-table>
 
     <pagination
+      :page-sizes="[50, 100]"
       v-show="total > 0"
       :total="total"
       :page.sync="queryParams.pageNum"

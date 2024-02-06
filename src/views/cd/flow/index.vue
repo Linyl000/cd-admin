@@ -140,6 +140,7 @@
       :page.sync="queryParams.pageNum"
       :limit.sync="queryParams.pageSize"
       @pagination="getList"
+      :page-sizes="[50, 100]"
     />
 
     <!-- 添加或修改代币流水对话框 -->

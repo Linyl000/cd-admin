@@ -192,6 +192,7 @@
       :page.sync="queryParams.pageNum"
       :limit.sync="queryParams.pageSize"
       @pagination="getList"
+      :page-sizes="[50, 100]"
     />
 
     <!-- 添加或修改充值记录对话框 -->

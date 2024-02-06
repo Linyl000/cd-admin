@@ -147,7 +147,7 @@
         class-name="small-padding fixed-width"
       >
         <template slot-scope="scope">
-          <!--      <el-button
+          <el-button
             size="mini"
             type="text"
             icon="el-icon-edit"
@@ -155,7 +155,7 @@
             v-hasPermi="['cd:ordersettlement:edit']"
             >修改</el-button
           >
-          <el-button
+          <!--   <el-button
             size="mini"
             type="text"
             icon="el-icon-delete"
@@ -180,6 +180,7 @@
       :page.sync="queryParams.pageNum"
       :limit.sync="queryParams.pageSize"
       @pagination="getList"
+      :page-sizes="[50, 100]"
     />
     <!-- 查看token -->
     <el-dialog
