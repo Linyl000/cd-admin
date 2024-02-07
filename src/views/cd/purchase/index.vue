@@ -599,7 +599,6 @@ export default {
                 confirmButtonText: '确定',
                 showClose: false,
                 callback: (action) => {
-                  this.isAutoing = true
                   this.getAutoOrderResult()
                 }
               }
@@ -611,53 +610,38 @@ export default {
       })
     },
     getAutoOrderResult() {
-      getAutoOrderResult().then((res) => {
-        localStorage.setItem('autodata', res.isEnd)
-        const list = res.msg
-        this.rloading = true
-        const that = this
-        function addChunk(start, end) {
-          if (start < list.length) {
-            setTimeout(() => {
-              that.rightList.push(...list.slice(start, end))
-              that.$nextTick(() => {
-                const container = that.$refs.rightBox
-                container.scrollTop = container.scrollHeight
-                if (end < list.length) {
-                  addChunk(end, Math.min(end + 3, list.length))
-                } else {
-                  that.rloading = false
-                  if (res.isEnd === '0') {
-                    this.getAutoOrderResult()
-                    return
+      getAutoOrderResult()
+        .then((res) => {
+          this.isAutoing = true
+          localStorage.setItem('autodata', res.isEnd)
+          const list = res.msg
+          this.rloading = true
+          const that = this
+          function addChunk(start, end) {
+            if (start < list.length) {
+              setTimeout(() => {
+                that.rightList.push(...list.slice(start, end))
+                that.$nextTick(() => {
+                  const container = that.$refs.rightBox
+                  container.scrollTop = container.scrollHeight || 0
+                  if (end < list.length) {
+                    addChunk(end, Math.min(end + 3, list.length))
+                  } else {
+                    that.rloading = false
+                    if (res.isEnd === '0') {
+                      that.getAutoOrderResult()
+                      return
+                    }
                   }
-                }
-              })
-            }, 2000)
+                })
+              }, 2000)
+            }
           }
-        }
-        addChunk(0, Math.min(3, list.length))
-      })
-      // const list = response.data
-      // this.rloading = true
-      // const that = this
-      // function addChunk(start, end) {
-      //   if (start < list.length) {
-      //     setTimeout(() => {
-      //       that.rightList.push(...list.slice(start, end))
-      //       that.$nextTick(() => {
-      //         const container = that.$refs.rightBox
-      //         container.scrollTop = container.scrollHeight
-      //         if (end < list.length) {
-      //           addChunk(end, Math.min(end + 3, list.length))
-      //         } else {
-      //           that.rloading = false
-      //         }
-      //       })
-      //     }, 2000)
-      //   }
-      // }
-      // addChunk(0, Math.min(3, list.length))
+          addChunk(0, Math.min(3, list.length))
+        })
+        .catch((res) => {
+          localStorage.removeItem('autodata')
+        })
     },
     handleImport1() {
       this.upload.title = 'Token导入'
