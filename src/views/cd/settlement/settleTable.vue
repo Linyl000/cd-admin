@@ -340,7 +340,7 @@ export default {
       queryParams: {
         token: '',
         pageNum: 1,
-        pageSize: 10,
+        pageSize: 50,
         status: null,
         createTime: null
       },

@@ -38,6 +38,7 @@
           :data="orderList"
           @selection-change="handleSelectionChange"
           style="width: 100%"
+          height="80vh"
         >
           <el-table-column label="ID" width="80">
             <template slot-scope="scope">
@@ -334,7 +335,7 @@ export default {
       // 查询参数
       queryParams: {
         pageNum: 1,
-        pageSize: 10
+        pageSize: 50
       },
       // 用户导入参数
       upload: {
