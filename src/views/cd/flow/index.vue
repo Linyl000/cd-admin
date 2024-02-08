@@ -108,6 +108,7 @@
       <el-table-column label="变化金额" align="center" prop="amountChange" />
       <el-table-column label="变更之前" align="center" prop="changeBefore" />
       <el-table-column label="变更之后" align="center" prop="changeAfter" />
+      <el-table-column label="创建时间" align="center" prop="createTime" />
       <el-table-column
         label="操作"
         align="center"

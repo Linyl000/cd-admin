@@ -57,14 +57,14 @@
             </template>
           </el-table-column>
         </el-table>
-        <pagination
+        <!-- <pagination
           v-show="total > 0"
           :total="total"
           :page.sync="queryParams.pageNum"
           :limit.sync="queryParams.pageSize"
           @pagination="getList"
           :page-sizes="[50, 100]"
-        />
+        /> -->
       </el-col>
       <el-col :span="10">
         <el-form ref="form" :model="form" :rules="rules" label-width="80px"
@@ -527,8 +527,7 @@ export default {
     getList() {
       this.loading = true
       listOrder(this.queryParams).then((response) => {
-        this.orderList = response.rows
-        this.total = response.total
+        this.orderList = response.data
         this.loading = false
       })
     },
@@ -614,7 +613,7 @@ export default {
       getAutoOrderResult()
         .then((res) => {
           this.isAutoing = true
-          localStorage.setItem('autodata', res.isEnd)
+          // localStorage.setItem('autodata', res.isEnd)
           const list = res.msg
           this.rloading = true
           const that = this
@@ -625,6 +624,7 @@ export default {
                 that.$nextTick(() => {
                   const container = that.$refs.rightBox
                   container.scrollTop = container.scrollHeight || 0
+                  that.getList()
                   if (end < list.length) {
                     addChunk(end, Math.min(end + 3, list.length))
                   } else {
@@ -641,7 +641,7 @@ export default {
           addChunk(0, Math.min(3, list.length))
         })
         .catch((res) => {
-          localStorage.removeItem('autodata')
+          // localStorage.removeItem('autodata')
         })
     },
     handleImport1() {
