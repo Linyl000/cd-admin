@@ -526,6 +526,7 @@ export default {
     /** 查询token */
     getList() {
       this.loading = true
+      this.orderList = []
       listOrder(this.queryParams).then((response) => {
         this.orderList = response.data
         this.loading = false
@@ -617,6 +618,8 @@ export default {
           const list = res.msg
           this.rloading = true
           const that = this
+          const token = res.token
+          const count = res.count
           function addChunk(start, end) {
             if (start < list.length) {
               setTimeout(() => {
@@ -624,11 +627,14 @@ export default {
                 that.$nextTick(() => {
                   const container = that.$refs.rightBox
                   container.scrollTop = container.scrollHeight || 0
-                  that.getList()
                   if (end < list.length) {
                     addChunk(end, Math.min(end + 3, list.length))
                   } else {
                     that.rloading = false
+                    that.getList()
+                    that.$set(that.form, 'token', token)
+                    that.tokenOrderCount = count
+                    console.log(that.form)
                     if (res.isEnd === '0') {
                       that.getAutoOrderResult()
                       return
