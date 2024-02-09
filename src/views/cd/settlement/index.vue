@@ -30,6 +30,7 @@
           :data="orderList"
           @selection-change="handleSelectionChange"
           style="width: 100%"
+          height="80vh"
         >
           <el-table-column label="ID" width="80">
             <template slot-scope="scope">
@@ -51,14 +52,14 @@
             </template>
           </el-table-column>
         </el-table>
-        <pagination
+        <!-- <pagination
           v-show="total > 0"
           :total="total"
           :page.sync="queryParams.pageNum"
           :limit.sync="queryParams.pageSize"
           @pagination="getList"
           :page-sizes="[50, 100]"
-        />
+        /> -->
       </el-col>
       <el-col :span="16"><settleTable ref="child" /></el-col>
     </el-row>
@@ -158,8 +159,7 @@ export default {
     getList() {
       this.loading = true
       listOrders(this.queryParams).then((response) => {
-        this.orderList = response.rows
-        this.total = response.total
+        this.orderList = response.data
         this.loading = false
       })
     },
