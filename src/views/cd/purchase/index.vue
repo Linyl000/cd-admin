@@ -630,7 +630,7 @@ export default {
                     addChunk(end, Math.min(end + 3, list.length))
                   } else {
                     that.rloading = false
-                    this.orderList = []
+                    that.orderList = []
                     that.getList()
                     that.$set(that.form, 'token', token)
                     that.tokenOrderCount = count
