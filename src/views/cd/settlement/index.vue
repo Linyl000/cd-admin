@@ -39,7 +39,10 @@
           </el-table-column>
           <el-table-column prop="token" label="Token">
             <template slot-scope="scope">
-              <div v-if="scope.row.tokenOrderCount === '0'">
+              <div
+                v-if="scope.row.tokenOrderCount === '0'"
+                style="color: #f56c6c"
+              >
                 {{ scope.row.token }}
               </div>
               <!-- <div
@@ -48,7 +51,7 @@
               >
                 {{ scope.row.token }}
               </div> -->
-              <div v-else style="color: #f56c6c">{{ scope.row.token }}</div>
+              <div v-else>{{ scope.row.token }}</div>
             </template>
           </el-table-column>
         </el-table>

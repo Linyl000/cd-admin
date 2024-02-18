@@ -353,6 +353,7 @@
       >
         <template slot-scope="scope">
           <el-button
+            v-if="scope.row.waybillNo"
             size="mini"
             type="text"
             @click="

@@ -315,6 +315,7 @@ import {
   getAutoOrderResult
 } from '@/api/cd/purchase'
 import { getToken } from '@/utils/auth'
+import { getUserProfile } from '@/api/system/user'
 import service from '@/utils/request.js'
 export default {
   data() {
@@ -554,6 +555,7 @@ export default {
             this.$message.error('该token已下过一单，只能再下一个订单！')
             return
           }
+          this.getUser()
           const { token, oderNum, hbNum, jgqjMin, jgqjMax } = this.form
           SDorder({ token, oderNum, hbNum, jgqjMin, jgqjMax }).then(
             (response) => {
@@ -599,6 +601,7 @@ export default {
                 confirmButtonText: '确定',
                 showClose: false,
                 callback: (action) => {
+                  this.getUser()
                   this.getAutoOrderResult()
                 }
               }
@@ -607,6 +610,11 @@ export default {
         } else {
           this.$message.error('请认真检查表单参数填写')
         }
+      })
+    },
+    getUser() {
+      getUserProfile().then((response) => {
+        this.$store.commit('SET_AMOUNT', response.data.amount)
       })
     },
     getAutoOrderResult() {
@@ -641,7 +649,7 @@ export default {
                     }
                   }
                 })
-              }, 2000)
+              }, 8500)
             }
           }
           addChunk(0, Math.min(3, list.length))
