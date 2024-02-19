@@ -601,7 +601,6 @@ export default {
                 confirmButtonText: '确定',
                 showClose: false,
                 callback: (action) => {
-                  this.getUser()
                   this.getAutoOrderResult()
                 }
               }
@@ -642,10 +641,11 @@ export default {
                     that.getList()
                     that.$set(that.form, 'token', token)
                     that.tokenOrderCount = count
-                    console.log(that.form)
                     if (res.isEnd === '0') {
                       that.getAutoOrderResult()
                       return
+                    } else {
+                      that.getUser()
                     }
                   }
                 })

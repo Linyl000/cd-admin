@@ -19,7 +19,11 @@
         <div class="right-menu-item" style="padding: 0 20px">
           ￥: {{ amount }}
         </div>
-
+        <div class="right-menu-item">
+          <el-button type="primary" @click="getUser"
+            >刷新金额<i class="el-icon-refresh el-icon--right"></i
+          ></el-button>
+        </div>
         <screenfull id="screenfull" class="right-menu-item hover-effect" />
 
         <!-- <el-tooltip content="布局大小" effect="dark" placement="bottom">
